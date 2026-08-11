@@ -2,3 +2,6 @@
 *.log
 *.out
 *.pdf
+comment.cut
+*.bbl
+*.blg
