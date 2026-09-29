@@ -1,0 +1,47 @@
+
+@inproceedings{recpart-paper,
+  author = {Theodoridis, Theodoros and Grosser, Tobias and Su, Zhendong},
+  title = {Understanding and exploiting optimal function inlining},
+  year = {2022},
+  isbn = {9781450392051},
+  publisher = {Association for Computing Machinery},
+  address = {New York, NY, USA},
+  url = {https://doi.org/10.1145/3503222.3507744},
+  doi = {10.1145/3503222.3507744},
+  abstract = {Inlining is a core transformation in optimizing compilers. It replaces a function call (call site) with the body of the called function (callee). It helps reduce function call overhead and binary size, and more importantly, enables other optimizations. The problem of inlining has been extensively studied, but it is far from being solved; predicting which inlining decisions are beneficial is nontrivial due to interactions with the rest of the compiler pipeline. Previous work has mainly focused on designing heuristics for better inlining decisions and has not investigated optimal inlining, i.e., exhaustively finding the optimal inlining decisions. Optimal inlining is necessary for identifying and exploiting missed opportunities and evaluating the state of the art. This paper fills this gap through an extensive empirical analysis of optimal inlining using the SPEC2017 benchmark suite. Our novel formulation drastically reduces the inlining search space size (from 2349 down to 225) and allows us to exhaustively evaluate all inlining choices on 1,135 SPEC2017 files. We show a significant gap between the state-of-the-art strategy in LLVM and optimal inlining when optimizing for binary size, an important, deterministic metric independent of workload (in contrast to performance, another important metric). Inspired by our analysis, we introduce a simple, effective autotuning strategy for inlining that outperforms the state of the art by 7\% on average (and up to 28\%) on SPEC2017, 15\% on the source code of LLVM itself, and 10\% on the source code of SQLite. This work highlights the importance of exploring optimal inlining by providing new, actionable insight and an effective autotuning strategy that is of practical utility.},
+  booktitle = {Proceedings of the 27th ACM International Conference on Architectural Support for Programming Languages and Operating Systems},
+  pages = {977–989},
+  numpages = {13},
+  keywords = {autotuning, compiler optimization, optimal inlining, program size},
+  location = {Lausanne, Switzerland},
+  series = {ASPLOS '22}
+}
+
+% https://arxiv.org/abs/2002.03794
+@article{survey2020,
+  title={The Deep Learning Compiler: A Comprehensive Survey},
+  volume={32},
+  ISSN={2161-9883},
+  url={http://dx.doi.org/10.1109/TPDS.2020.3030548},
+  DOI={10.1109/tpds.2020.3030548},
+  number={3},
+  journal={IEEE Transactions on Parallel and Distributed Systems},
+  publisher={Institute of Electrical and Electronics Engineers (IEEE)},
+  author={Li, Mingzhen and Liu, Yi and Liu, Xiaoyan and Sun, Qingxiao and You, Xin and Yang, Hailong and Luan, Zhongzhi and Gan, Lin and Yang, Guangwen and Qian, Depei},
+  year={2021},
+  month=Mar,
+  pages={708–727}
+}
+
+% https://arxiv.org/abs/2301.13062
+@misc{xla2023,
+  title={Operator Fusion in XLA: Analysis and Evaluation}, 
+  author={Daniel Snider and Ruofan Liang},
+  year={2023},
+  eprint={2301.13062},
+  archivePrefix={arXiv},
+  primaryClass={cs.LG},
+  url={https://arxiv.org/abs/2301.13062}, 
+}
+
+

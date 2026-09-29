@@ -1,0 +1,16 @@
+improvement: True
+quality ours: 2.377556e-5
+quality baseline: 2.2696324e-5
+
+dropout: Just 0.755
+hlo module: "/hlos/small.hlo"
+
+computation: "a_inference_one_step_on_data_3456__.16"
+forced fusions: [(OrigReg "ArgMax.8",OrigReg "ArgMax.9",RenameReg "tmpc")]
+
+eval count: 20006
+eval rate: 9.84364312325
+bits to search (2^x): 14.288000889707574
+exponential base (x^edges): 1.4860885013742164
+
+full config: Config {configDropout = Just 0.755, configDropoutPolicy = DropoutCenter, configOnlyCountEvals = False, configHloOptLog = False, configEtaInterval = 20000000, configGraphFuseAll = False, configHloPath = "/hlos/small.hlo", configWorkingDir = "/RecursivePartitioning", configThreadBudget = 128.0, configEvalRate = 60.0, configCompName = Nothing, configHloOptArgs = ["--platform=CUDA","--xla_gpu_target_config_filename=/xla/xla/backends/gpu/target_config/specs/sm75_2080ti.txtpb"], configOutputFrags = "/runs/small"}

@@ -5,7 +5,7 @@ BIBTEX = bibtex
 
 NAME = paper
 TEXFILE = $(NAME).tex
-BIBFILE = sample-base.bib
+BIBFILE = bib.bib
 
 .PHONY: all clean
 
