@@ -1,0 +1,21 @@
+improvement: False
+quality ours: 1.390202e-7
+quality baseline: 1.390202e-7
+
+fuse into all: True
+
+dropout: Just 0.983
+hlo module: "/keras-hlos/diffusion.hlo"
+
+computation: "a_inference_one_step_on_data_3509__XlaMustCompile_true_config_proto_13561319589895757934_executor_type_11160318154034397263_.50"
+forced fusions: []
+
+total edges: 1449
+edges after dropout: 25
+
+eval count: 261379
+eval rate: 49.9685647825
+bits to search (2^x): 17.995772670482822
+exponential base (x^edges): 1.646988985471042
+
+full config: Config {configDropout = Just 0.983, configDropoutPolicy = DropoutCenter, configOnlyCountEvals = False, configHloOptLog = False, configEtaInterval = 20000000, configGraphFuseAll = True, configHloPath = "/keras-hlos/diffusion.hlo", configWorkingDir = "/RecursivePartitioning", configThreadBudget = 128.0, configEvalRate = 60.0, configCompName = Nothing, configHloOptArgs = ["--platform=CUDA","--xla_gpu_target_config_filename=/xla/xla/backends/gpu/target_config/specs/sm75_2080ti.txtpb"], configOutputFrags = "/runs/diffusion"}

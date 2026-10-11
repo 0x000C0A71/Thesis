@@ -1,0 +1,21 @@
+improvement: True
+quality ours: 1.6959222e-8
+quality baseline: 1.6956761e-8
+
+fuse into all: True
+
+dropout: Just 0.982
+hlo module: "/keras-hlos/diffusion-large.hlo"
+
+computation: "a_inference_one_step_on_data_4425__XlaMustCompile_true_config_proto_13561319589895757934_executor_type_11160318154034397263_.62"
+forced fusions: [(OrigReg "reshape.546",OrigReg "convert.252",RenameReg "tmp0"),(OrigReg "BiasAdd.117",RenameReg "tmp0",RenameReg "tmp2"),(OrigReg "multiply.21",OrigReg "SquaredDifference.125",RenameReg "tmpc5"),(OrigReg "multiply.21",OrigReg "Neg.10",RenameReg "tmp74"),(OrigReg "div_no_nan.20",OrigReg "variance.421",RenameReg "tmp5097e"),(OrigReg "div_no_nan.20",OrigReg "mean.421",RenameReg "tmp39cfe")]
+
+total edges: 1775
+edges after dropout: 32
+
+eval count: 376142
+eval rate: 32.297285419545
+bits to search (2^x): 18.520910210044242
+exponential base (x^edges): 1.4935840684906032
+
+full config: Config {configDropout = Just 0.982, configDropoutPolicy = DropoutCenter, configOnlyCountEvals = False, configHloOptLog = False, configEtaInterval = 20000000, configGraphFuseAll = True, configHloPath = "/keras-hlos/diffusion-large.hlo", configWorkingDir = "/RecursivePartitioning", configThreadBudget = 128.0, configEvalRate = 60.0, configCompName = Nothing, configHloOptArgs = ["--platform=CUDA","--xla_gpu_target_config_filename=/xla/xla/backends/gpu/target_config/specs/sm75_2080ti.txtpb"], configOutputFrags = "/runs/diffusion-large"}

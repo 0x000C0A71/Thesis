@@ -1,0 +1,21 @@
+improvement: True
+quality ours: 2.9129042e-5
+quality baseline: 2.8912596e-5
+
+fuse into all: True
+
+dropout: Just 0.72
+hlo module: "/keras-hlos/mnist.hlo"
+
+computation: "a_inference_one_step_on_data_451__XlaMustCompile_true_config_proto_13561319589895757934_executor_type_11160318154034397263_.14"
+forced fusions: [(OrigReg "clamp",OrigReg "Log.1",RenameReg "tmp6"),(OrigReg "Cast_2.3",RenameReg "tmp6",RenameReg "tmpe"),(OrigReg "Softmax.45",RenameReg "tmpe",RenameReg "tmp26"),(OrigReg "Softmax.44",RenameReg "tmp26",RenameReg "tmp6e"),(OrigReg "Softmax.40",RenameReg "tmp6e",RenameReg "tmp146"),(OrigReg "Softmax.39",RenameReg "tmp146",RenameReg "tmp352a"),(OrigReg "Softmax.38",RenameReg "tmp352a",RenameReg "tmp1ad0e")]
+
+total edges: 169
+edges after dropout: 47
+
+eval count: 89166
+eval rate: 46.160922618528
+bits to search (2^x): 16.44417371856434
+exponential base (x^edges): 1.2744511155229914
+
+full config: Config {configDropout = Just 0.72, configDropoutPolicy = DropoutCenter, configOnlyCountEvals = False, configHloOptLog = False, configEtaInterval = 20000000, configGraphFuseAll = True, configHloPath = "/keras-hlos/mnist.hlo", configWorkingDir = "/RecursivePartitioning", configThreadBudget = 128.0, configEvalRate = 60.0, configCompName = Nothing, configHloOptArgs = ["--platform=CUDA","--xla_gpu_target_config_filename=/xla/xla/backends/gpu/target_config/specs/sm75_2080ti.txtpb"], configOutputFrags = "/runs/mnist"}

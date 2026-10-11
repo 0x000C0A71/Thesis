@@ -1,0 +1,21 @@
+improvement: False
+quality ours: 5.8459364e-6
+quality baseline: 5.8459364e-6
+
+fuse into all: True
+
+dropout: Just 0.93
+hlo module: "/keras-hlos/cifar10.hlo"
+
+computation: "a_inference_one_step_on_data_1169__XlaMustCompile_true_config_proto_13561319589895757934_executor_type_11160318154034397263_.11"
+forced fusions: []
+
+total edges: 413
+edges after dropout: 29
+
+eval count: 216347
+eval rate: 53.850918749071
+bits to search (2^x): 17.722974253118686
+exponential base (x^edges): 1.5274625864442168
+
+full config: Config {configDropout = Just 0.93, configDropoutPolicy = DropoutCenter, configOnlyCountEvals = False, configHloOptLog = False, configEtaInterval = 20000000, configGraphFuseAll = True, configHloPath = "/keras-hlos/cifar10.hlo", configWorkingDir = "/RecursivePartitioning", configThreadBudget = 128.0, configEvalRate = 60.0, configCompName = Nothing, configHloOptArgs = ["--platform=CUDA","--xla_gpu_target_config_filename=/xla/xla/backends/gpu/target_config/specs/sm75_2080ti.txtpb"], configOutputFrags = "/runs/cifar10"}

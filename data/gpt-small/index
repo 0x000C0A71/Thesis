@@ -1,0 +1,21 @@
+improvement: False
+quality ours: 2.1392582e-8
+quality baseline: 2.1392582e-8
+
+fuse into all: True
+
+dropout: Just 0.982
+hlo module: "/keras-hlos/gpt-small.hlo"
+
+computation: "a_inference_one_step_on_data_4535__XlaMustCompile_true_config_proto_13561319589895757934_executor_type_11160318154034397263_.61"
+forced fusions: []
+
+total edges: 2133
+edges after dropout: 37
+
+eval count: 377869
+eval rate: 11.382921398689
+bits to search (2^x): 18.52751900463779
+exponential base (x^edges): 1.4149428240766169
+
+full config: Config {configDropout = Just 0.982, configDropoutPolicy = DropoutCenter, configOnlyCountEvals = False, configHloOptLog = False, configEtaInterval = 20000000, configGraphFuseAll = True, configHloPath = "/keras-hlos/gpt-small.hlo", configWorkingDir = "/RecursivePartitioning", configThreadBudget = 128.0, configEvalRate = 60.0, configCompName = Nothing, configHloOptArgs = ["--platform=CUDA","--xla_gpu_target_config_filename=/xla/xla/backends/gpu/target_config/specs/sm75_2080ti.txtpb"], configOutputFrags = "/runs/gpt-small"}

@@ -1,0 +1,21 @@
+improvement: False
+quality ours: 6.9231606e-7
+quality baseline: 6.9231606e-7
+
+fuse into all: True
+
+dropout: Just 0.907
+hlo module: "/keras-hlos/unet.hlo"
+
+computation: "a_inference_one_step_on_data_983__XlaMustCompile_true_config_proto_13561319589895757934_executor_type_11160318154034397263_.16"
+forced fusions: []
+
+total edges: 335
+edges after dropout: 31
+
+eval count: 159456
+eval rate: 47.466467261076
+bits to search (2^x): 17.28278076335832
+exponential base (x^edges): 1.4717259547280361
+
+full config: Config {configDropout = Just 0.907, configDropoutPolicy = DropoutCenter, configOnlyCountEvals = False, configHloOptLog = False, configEtaInterval = 20000000, configGraphFuseAll = True, configHloPath = "/keras-hlos/unet.hlo", configWorkingDir = "/RecursivePartitioning", configThreadBudget = 128.0, configEvalRate = 60.0, configCompName = Nothing, configHloOptArgs = ["--platform=CUDA","--xla_gpu_target_config_filename=/xla/xla/backends/gpu/target_config/specs/sm75_2080ti.txtpb"], configOutputFrags = "/runs/unet"}
