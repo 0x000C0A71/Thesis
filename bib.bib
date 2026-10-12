@@ -44,4 +44,196 @@
   url={https://arxiv.org/abs/2301.13062}, 
 }
 
+% https://dl.acm.org/doi/abs/10.5555/3291168.3291211
+@inproceedings{chen2018tvm,
+author = {Chen, Tianqi and Moreau, Thierry and Jiang, Ziheng and Zheng, Lianmin and Yan, Eddie and Cowan, Meghan and Shen, Haichen and Wang, Leyuan and Hu, Yuwei and Ceze, Luis and Guestrin, Carlos and Krishnamurthy, Arvind},
+title = {TVM: an automated end-to-end optimizing compiler for deep learning},
+year = {2018},
+isbn = {9781931971478},
+publisher = {USENIX Association},
+address = {USA},
+abstract = {There is an increasing need to bring machine learning to a wide diversity of hardware devices. Current frameworks rely on vendor-specific operator libraries and optimize for a narrow range of server-class GPUs. Deploying workloads to new platforms - such as mobile phones, embedded devices, and accelerators (e.g., FPGAs, ASICs) - requires significant manual effort. We propose TVM, a compiler that exposes graph-level and operator-level optimizations to provide performance portability to deep learning workloads across diverse hardware back-ends. TVM solves optimization challenges specific to deep learning, such as high-level operator fusion, mapping to arbitrary hardware primitives, and memory latency hiding. It also automates optimization of low-level programs to hardware characteristics by employing a novel, learning-based cost modeling method for rapid exploration of code optimizations. Experimental results show that TVM delivers performance across hardware back-ends that are competitive with state-of-the-art, hand-tuned libraries for low-power CPU, mobile GPU, and server-class GPUs. We also demonstrate TVM's ability to target new accelerator back-ends, such as the FPGA-based generic deep learning accelerator. The system is open sourced and in production use inside several major companies.},
+booktitle = {Proceedings of the 13th USENIX Conference on Operating Systems Design and Implementation},
+pages = {579–594},
+numpages = {16},
+location = {Carlsbad, CA, USA},
+series = {OSDI'18}
+}
+
+% https://dl.acm.org/doi/10.1145/3453483.3454083
+@inproceedings{niu2021dnnfusion,
+author = {Niu, Wei and Guan, Jiexiong and Wang, Yanzhi and Agrawal, Gagan and Ren, Bin},
+title = {DNNFusion: accelerating deep neural networks execution with advanced operator fusion},
+year = {2021},
+isbn = {9781450383912},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3453483.3454083},
+doi = {10.1145/3453483.3454083},
+abstract = {Deep Neural Networks (DNNs) have emerged as the core enabler of many major applications on mobile devices. To achieve high accuracy, DNN models have become increasingly deep with hundreds or even thousands of operator layers, leading to high memory and computational requirements for inference. Operator fusion (or kernel/layer fusion) is key optimization in many state-of-the-art DNN execution frameworks, such as TensorFlow, TVM, and MNN, that aim to improve the efficiency of the DNN inference. However, these frameworks usually adopt fusion approaches based on certain patterns that are too restrictive to cover the diversity of operators and layer connections, especially those seen in many extremely deep models. Polyhedral-based loop fusion techniques, on the other hand, work on a low-level view of the computation without operator-level information, and can also miss potential fusion opportunities. To address this challenge, this paper proposes a novel and extensive loop fusion framework called DNNFusion. The basic idea of this work is to work at an operator view of DNNs, but expand fusion opportunities by developing a classification of both individual operators and their combinations. In addition, DNNFusion includes 1) a novel mathematical-property-based graph rewriting framework to reduce evaluation costs and facilitate subsequent operator fusion, 2) an integrated fusion plan generation that leverages the high-level analysis and accurate light-weight profiling, and 3) additional optimizations during fusion code generation. DNNFusion is extensively evaluated on 15 DNN models with varied types of tasks, model sizes, and layer counts. The evaluation results demonstrate that DNNFusion finds up to 8.8 {\texttimes} higher fusion opportunities, outperforms four state-of-the-art DNN execution frameworks with 9.3{\texttimes} speedup. The memory requirement reduction and speedups can enable the execution of many of the target models on mobile devices and even make them part of a real-time application.},
+booktitle = {Proceedings of the 42nd ACM SIGPLAN International Conference on Programming Language Design and Implementation},
+pages = {883–898},
+numpages = {16},
+keywords = {Operator Fusion, Mobile Devices, Deep Neural Network, Compiler Optimization},
+location = {Virtual, Canada},
+series = {PLDI 2021}
+}
+
+% https://proceedings.mlsys.org/paper_files/paper/2022/hash/e175e8a86d28d935be4f43719651f86d-Abstract.html
+@inproceedings{zhao2022apollo,
+ author = {Zhao, Jie and Gao, Xiong and Xia, Ruijie and Zhang, Zhaochuang and Chen, Deshi and Chen, Lei  and Zhang, Renwei and Geng, Zhen and Cheng, Bin and Jin, Xuefeng},
+ booktitle = {Proceedings of Machine Learning and Systems},
+ editor = {D. Marculescu and Y. Chi and C. Wu},
+ pages = {1--19},
+ title = {Apollo: Automatic Partition-based Operator Fusion through Layer by Layer Optimization},
+ url = {https://proceedings.mlsys.org/paper_files/paper/2022/file/e175e8a86d28d935be4f43719651f86d-Paper.pdf},
+ volume = {4},
+ year = {2022}
+}
+
+% https://ieeexplore.ieee.org/document/10071018
+@INPROCEEDINGS{chimera2023,
+  author={Zheng, Size and Chen, Siyuan and Song, Peidi and Chen, Renze and Li, Xiuhong and Yan, Shengen and Lin, Dahua and Leng, Jingwen and Liang, Yun},
+  booktitle={2023 IEEE International Symposium on High-Performance Computer Architecture (HPCA)}, 
+  title={Chimera: An Analytical Optimizing Framework for Effective Compute-intensive Operators Fusion}, 
+  year={2023},
+  volume={},
+  number={},
+  pages={1113-1126},
+  keywords={Analytical models;Tensors;Convolution;Computational modeling;Graphics processing units;Machine learning;Bandwidth},
+  doi={10.1109/HPCA56546.2023.10071018}
+}
+
+% https://arxiv.org/abs/2510.08726
+@misc{zhao2026neptune,
+      title={Neptune: Advanced ML Operator Fusion for Locality and Parallelism on GPUs}, 
+      author={Yifan Zhao and Egan Johnson and Prasanth Chatarasi and Vikram Adve and Sasa Misailovic},
+      year={2026},
+      eprint={2510.08726},
+      archivePrefix={arXiv},
+      primaryClass={cs.PL},
+      url={https://arxiv.org/abs/2510.08726}, 
+}
+
+% https://dl.acm.org/doi/abs/10.1145/2499370.2462176
+@article{ragan2013halide,
+author = {Ragan-Kelley, Jonathan and Barnes, Connelly and Adams, Andrew and Paris, Sylvain and Durand, Fr{\'e}do and Amarasinghe, Saman},
+title = {Halide: a language and compiler for optimizing parallelism, locality, and recomputation in image processing pipelines},
+year = {2013},
+issue_date = {June 2013},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {48},
+number = {6},
+issn = {0362-1340},
+url = {https://doi.org/10.1145/2499370.2462176},
+doi = {10.1145/2499370.2462176},
+abstract = {Image processing pipelines combine the challenges of stencil computations and stream programs. They are composed of large graphs of different stencil stages, as well as complex reductions, and stages with global or data-dependent access patterns. Because of their complex structure, the performance difference between a naive implementation of a pipeline and an optimized one is often an order of magnitude. Efficient implementations require optimization of both parallelism and locality, but due to the nature of stencils, there is a fundamental tension between parallelism, locality, and introducing redundant recomputation of shared values.We present a systematic model of the tradeoff space fundamental to stencil pipelines, a schedule representation which describes concrete points in this space for each stage in an image processing pipeline, and an optimizing compiler for the Halide image processing language that synthesizes high performance implementations from a Halide algorithm and a schedule. Combining this compiler with stochastic search over the space of schedules enables terse, composable programs to achieve state-of-the-art performance on a wide range of real image processing pipelines, and across different hardware architectures, including multicores with SIMD, and heterogeneous CPU+GPU execution. From simple Halide programs written in a few hours, we demonstrate performance up to 5x faster than hand-tuned C, intrinsics, and CUDA implementations optimized by experts over weeks or months, for image processing applications beyond the reach of past automatic compilers.},
+journal = {SIGPLAN Not.},
+month = jun,
+pages = {519–530},
+numpages = {12},
+keywords = {autotuning, compiler, domain specific language, gpu, image processing, locality, optimization, parallelism, redundant computation, vectorization}
+}
+
+@online{tensorrt,
+  author       = {{NVIDIA}},
+  title        = {Layer Fusion Catalog},
+  organization = {NVIDIA},
+  url          = {https://docs.nvidia.com/deeplearning/tensorrt/latest/performance/fusion-catalog.html},
+  urldate      = {2026-10-09}
+}
+
+% https://dl.acm.org/doi/10.1145/3197978
+@article{ashouri2018survey,
+author = {Ashouri, Amir H. and Killian, William and Cavazos, John and Palermo, Gianluca and Silvano, Cristina},
+title = {A Survey on Compiler Autotuning using Machine Learning},
+year = {2018},
+issue_date = {September 2019},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {51},
+number = {5},
+issn = {0360-0300},
+url = {https://doi.org/10.1145/3197978},
+doi = {10.1145/3197978},
+abstract = {Since the mid-1990s, researchers have been trying to use machine-learning-based approaches to solve a number of different compiler optimization problems. These techniques primarily enhance the quality of the obtained results and, more importantly, make it feasible to tackle two main compiler optimization problems: optimization selection (choosing which optimizations to apply) and phase-ordering (choosing the order of applying optimizations). The compiler optimization space continues to grow due to the advancement of applications, increasing number of compiler optimizations, and new target architectures. Generic optimization passes in compilers cannot fully leverage newly introduced optimizations and, therefore, cannot keep up with the pace of increasing options. This survey summarizes and classifies the recent advances in using machine learning for the compiler optimization field, particularly on the two major problems of (1) selecting the best optimizations, and (2) the phase-ordering of optimizations. The survey highlights the approaches taken so far, the obtained results, the fine-grain classification among different approaches, and finally, the influential papers of the field.},
+journal = {ACM Comput. Surv.},
+month = sep,
+articleno = {96},
+numpages = {42},
+keywords = {Autotuning, compilers, machine learning, optimizations, phase ordering}
+}
+
+% https://dl.acm.org/doi/10.1145/3721145.3725765
+@inproceedings{cui2025decos,
+author = {Cui, Tianming and Yew, Pen-Chung and McCamant, Stephen and Zhai, Antonia},
+title = {DeCOS: Data-Efficient Reinforcement Learning for Compiler Optimization Selection Ignited by LLM},
+year = {2025},
+isbn = {9798400715372},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3721145.3725765},
+doi = {10.1145/3721145.3725765},
+abstract = {Machine learning methods have proven their effectiveness in a wide range of program optimization tasks. These methods selectively map program feature spaces to carefully defined optimization spaces to identify effective optimizations. However, the size and complexity of these spaces often necessitate large amounts of training data to achieve effective mappings. For certain optimization tasks, obtaining accurate training data can be costly, making data efficiency a critical concern. Reinforcement learning (RL) offers a promising solution by dynamically adjusting exploration strategies and selectively requesting training data. In this paper, we propose leveraging reinforcement learning to optimize compilation sequences.This paper presents the Data-efficient Compiler Optimization Selection (DeCOS) system, which utilizes a reinforcement learning engine to perform a guided search of the optimization spaces. To improve the data efficiency in training DeCOS, we utilize synthesized data to configure the RL-architecture; and incorporate simulation results to refine profiling information. To overcome the slow start-up issue in RL-processes, we integrate an LLM into the workflow, leveraging its knowledge to accelerate the initial training phase of the RL-agent. Our experiments show that DeCOS efficiently generates compiler optimization sequences that either match or outperform that of the state-of-the-art optimizer Opentuner. Furthermore, the DeCOS reinforcement learning engine, once trained, demonstrates its versatility by showing portability across different target applications and hardware platforms, highlighting its broad applicability and adaptability.},
+booktitle = {Proceedings of the 39th ACM International Conference on Supercomputing},
+pages = {943–958},
+numpages = {16},
+keywords = {Compilers, Reinforcement Learning, Language models},
+location = {Salt Lake City, USA},
+series = {ICS '25}
+}
+
+% https://dl.acm.org/doi/abs/10.1145/2872362.2872387#1
+@article{phothilimthana2016lens,
+author = {Phothilimthana, Phitchaya Mangpo and Thakur, Aditya and Bodik, Rastislav and Dhurjati, Dinakar},
+title = {Scaling up Superoptimization},
+year = {2016},
+issue_date = {May 2016},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {44},
+number = {2},
+issn = {0163-5964},
+url = {https://doi.org/10.1145/2980024.2872387},
+doi = {10.1145/2980024.2872387},
+abstract = {Developing a code optimizer is challenging, especially for new, idiosyncratic ISAs. Superoptimization can, in principle, discover machine-specific optimizations automatically by searching the space of all instruction sequences. If we can increase the size of code fragments a superoptimizer can optimize, we will be able to discover more optimizations. We develop LENS, a search algorithm that increases the size of code a superoptimizer can synthesize by rapidly pruning away invalid candidate programs. Pruning is achieved by selectively refining the abstraction under which candidates are considered equivalent, only in the promising part of the candidate space. LENS also uses a bidirectional search strategy to prune the candidate space from both forward and backward directions. These pruning strategies allow LENS to solve twice as many benchmarks as existing enumerative search algorithms, while LENS is about 11-times faster.Additionally, we increase the effective size of the superoptimized fragments by relaxing the correctness condition using contexts (surrounding code). Finally, we combine LENS with complementary search techniques into a cooperative superoptimizer, which exploits the stochastic search to make random jumps in a large candidate space, and a symbolic (SAT-solver-based) search to synthesize arbitrary constants. While existing superoptimizers consistently solve 9--16 out of 32 benchmarks, the cooperative superoptimizer solves 29 benchmarks. It can synthesize code fragments that are up to 82\% faster than code generated by gcc -O3 from WiBench and MiBench.},
+journal = {SIGARCH Comput. Archit. News},
+month = mar,
+pages = {297–310},
+numpages = {14},
+keywords = {SMT, program synthesis, superoptimization}
+}
+
+% https://dl.acm.org/doi/10.1145/3763162
+@article{lu2025hierasynth,
+author = {Lu, Sirui and Bod{\'i}k, Rastislav},
+title = {HieraSynth: A Parallel Framework for Complete Super-Optimization with Hierarchical Space Decomposition},
+year = {2025},
+issue_date = {October 2025},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {9},
+number = {OOPSLA2},
+url = {https://doi.org/10.1145/3763162},
+doi = {10.1145/3763162},
+abstract = {Modern optimizing compilers generate efficient code but rarely achieve theoretical optimality, often necessitating manual fine-tuning. This is especially the case for processors with vector instructions, which can grow the instruction set by an order of magnitude. Super-optimizers can synthesize optimal code, but they face a fundamental scalability constraint: as the size of the instruction set increases, the length of the longest synthesizable program decreases rapidly.To help super-optimizers deal with large instruction sets, we introduce HieraSynth, a parallel framework for super-optimization that decomposes the problem by hierarchically partitioning the space of candidate programs, effectively decreasing the instruction set size. It also prunes search branches when the solver proves unrealizability, and explores independent subspaces in parallel, achieving near-linear speedup. HieraSynth is sufficiently efficient to run to completeness even on many hard problems, which means that it exhaustively explores the program space. This ensures that the synthesized program is optimal according to a cost model.We implement HieraSynth as a library and demonstrate its effectiveness with a RISC-V Vector superoptimizer capable of handling instruction sets with up to 700 instructions while synthesizing 7–8-instruction programs. This is a significant advancement over previous approaches that were limited to 1−3 instructions with similar instruction set sizes. Specifically, HieraSynth can handle instruction sets up to 10.66{\texttimes} larger for a given program size, or synthesize up to 4.75{\texttimes} larger programs for a fixed instruction set. Evaluations show that HieraSynth can synthesize code surpassing human-expert optimizations and significantly reduce synthesis time, making super-optimization more practical for modern vector architectures.},
+journal = {Proc. ACM Program. Lang.},
+month = oct,
+articleno = {384},
+numpages = {28},
+keywords = {Program Synthesis, Super-Optimization, Component-Based Synthesis, SMT, RISC-V, RVV, RISC-V Vector}
+}
+
+% https://arxiv.org/abs/2107.00564
+@misc{bik2021exhaustive,
+      title={A Note on Exhaustive State Space Search for Efficient Code Generation}, 
+      author={Aart J. C. Bik},
+      year={2021},
+      eprint={2107.00564},
+      archivePrefix={arXiv},
+      primaryClass={cs.PL},
+      url={https://arxiv.org/abs/2107.00564}, 
+}
+
 

@@ -46,6 +46,7 @@
 %%
 %\documentclass[acmsmall]{acmart}
 \documentclass[sigconf]{acmart}
+%\documentclass{article}
 %%
 %% \BibTeX command to typeset BibTeX logo in the docs
 \AtBeginDocument{%
@@ -57,26 +58,91 @@
 %% values in them; it is your responsibility as an author to replace
 %% the commands and values with those provided to you when you
 %% complete the rights form.
-\setcopyright{acmlicensed}
-\copyrightyear{2018}
-\acmYear{2018}
-\acmDOI{XXXXXXX.XXXXXXX}
+%\setcopyright{acmlicensed}
+%\copyrightyear{2018}
+%\acmYear{2018}
+%\acmDOI{XXXXXXX.XXXXXXX}
 
 %%
 %% These commands are for a JOURNAL article.
-\acmJournal{JACM}
-\acmVolume{37}
-\acmNumber{4}
-\acmArticle{111}
-\acmMonth{8}
+%\acmJournal{JACM}
+%\acmVolume{37}
+%\acmNumber{4}
+%\acmArticle{111}
+%\acmMonth{8}
 \usepackage{pgfplots}
 \usepgfplotslibrary{statistics}
 \pgfplotsset{compat=1.18}
 \usepackage{subcaption}
-\newcommand{\edge}[2]{$#1\rightarrow #2$}
+\newcommand{\edgem}[2]{#1\rightarrow #2}
+\newcommand{\edge}[2]{$\edgem{#1}{#2}$}
 \newcommand{\wrt}{\textit{w.r.t.}}
 \newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\codee}[1]{\texttt{#1}}
 \newcommand{\ncite}{\footnote{missing citation}}
+\usepgfplotslibrary{groupplots}
+\usetikzlibrary{pgfplots.statistics}
+\usepackage{booktabs}
+\usepackage{multirow}
+%\usepackage{siunitx}
+\usepackage{pgfplotstable}
+
+\newcommand{\recpart}{the Recrusive Partitioning method}
+\newcommand{\partitle}[1]{\textbf{#1:}\ }
+
+\newcommand{\nitem}[1]{\item\partitle{#1}}
+
+
+\newcommand{\lorem}{
+
+  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+  tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+  quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+  consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+  cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+  proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+}
+
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+% Define functional-style keywords
+\algnewcommand\algorithmicwhere{\textbf{where}}
+\algnewcommand\Where{\algorithmicwhere}
+\algnewcommand\algorithmiclet{\textbf{let}}
+\algnewcommand\Let{\algorithmiclet}
+\algnewcommand\algorithmiccase{\textbf{case}}
+\algnewcommand\Case{\algorithmiccase}
+
+\usepackage{listings}
+\usepackage{xcolor}
+
+\lstdefinelanguage{Haskell}{
+  morekeywords={data, type, newtype, class, instance, where, let, in, case, of, if, then, else, do, module, import, deriving},
+  sensitive=true,
+  morecomment=[l]{--},
+  morecomment=[s]{-}{-},
+  morestring=[b]"
+}
+
+
+\usepackage[most]{tcolorbox}
+
+\newtcolorbox{ghnote}{
+    colback=blue!5,
+    colframe=blue!60,
+    boxrule=0pt,
+    leftrule=3pt,
+    arc=2pt,
+    left=8pt, right=8pt, top=6pt, bottom=6pt,
+    fontupper=\small,
+}
+
+
+\pgfplotsset{
+  table/col sep=comma,
+}
 
 %%
 %% Submission ID.
@@ -118,7 +184,7 @@
 %%
 %% The "title" command has an optional parameter,
 %% allowing the author to define a "short title" to be used in page headers.
-\title{Studying Operator Fusion Decisions in OpenXLA}
+\title{Recursively Partitioned Search Space alone is not Enough for Operator Fusion}
 
 %%
 %% The "author" command and its associated commands are used to define
@@ -143,6 +209,27 @@
 \email{zhendong.su@inf.ethz.ch}
 
 
+
+
+
+
+
+%% Loading data
+\pgfplotstableread[col sep=comma]{data/mnist/results.csv}          \dataRuntimeMnist
+\pgfplotstableread[col sep=comma]{data/diffusion-large/results.csv}\dataRuntimeDiffusion
+\pgfplotstableread[col sep=comma]{data/summary.csv}                \dataRecpart
+\pgfplotstableread[col sep=comma]{data/summary-runtime.csv}        \dataRuntimeSummary
+\pgfplotstableread[col sep=comma]{data/mnist/scaling.csv}          \dataScalingMnist
+\pgfplotstableread[col sep=comma]{data/unet/scaling.csv}           \dataScalingUnet
+\pgfplotstableread[col sep=comma]{data/cifar10/scaling.csv}        \dataScalingCifar
+\pgfplotstableread[col sep=comma]{data/diffusion/scaling.csv}      \dataScalingDiffusion
+\pgfplotstableread[col sep=comma]{data/diffusion-large/scaling.csv}\dataScalingDiffusionLarge
+\pgfplotstableread[col sep=comma]{data/gpt/scaling.csv}            \dataScalingGpt
+\pgfplotstableread[col sep=comma]{data/runtimes.csv}               \dataRuntimeSummary
+\pgfplotstableread[col sep=comma]{data/relevance.csv}              \dataRuntimeRelevance
+
+
+
 %%
 %% By default, the full list of authors will be used in the page
 %% headers. Often, this list is too long, and will overlap
@@ -155,57 +242,68 @@
 %% The abstract is a short summary of the work to be presented in the
 %% article.
 \begin{abstract}
-  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-  tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-  quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-  consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-  cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-  proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+  
+  Operator fusion is a crucial optimization for computation graph compilers,
+  as it optimizes kernel dispatches and memory operations to reduce
+  the memory preassure of computation graph evaluators.
+  Finding good operator fusions is an optimization problem with and exponential search space,
+  which is usually solved via heuristics,
+  which cannot, however, find the global optmium due to their lack of exhaustiveness.
+  We implemented a technique from the related problem of function inlining,
+  designed to allow for exhaustive search of the global optimum by exploiting
+  graph connectedness to reduce the search space.
+  We found that this technique of recursively partitioned search space
+  does not reduce the search space sufficiently on its own to make an exhaustive search feasible,
+  as the reduced search space remains exponential.
+  The search space remains large enough to require dropout ratios of up to 98\% on the largest models.
+  We conclude that exhaustive search for optimal operator fusion requires a different partitioning strategy.
+
 \end{abstract}
 
 %%
 %% The code below is generated by the tool at http://dl.acm.org/ccs.cfm.
 %% Please copy and paste the code instead of the example below.
 %%
-\begin{CCSXML}
-<ccs2012>
- <concept>
-  <concept_id>00000000.0000000.0000000</concept_id>
-  <concept_desc>Do Not Use This Code, Generate the Correct Terms for Your Paper</concept_desc>
-  <concept_significance>500</concept_significance>
- </concept>
- <concept>
-  <concept_id>00000000.00000000.00000000</concept_id>
-  <concept_desc>Do Not Use This Code, Generate the Correct Terms for Your Paper</concept_desc>
-  <concept_significance>300</concept_significance>
- </concept>
- <concept>
-  <concept_id>00000000.00000000.00000000</concept_id>
-  <concept_desc>Do Not Use This Code, Generate the Correct Terms for Your Paper</concept_desc>
-  <concept_significance>100</concept_significance>
- </concept>
- <concept>
-  <concept_id>00000000.00000000.00000000</concept_id>
-  <concept_desc>Do Not Use This Code, Generate the Correct Terms for Your Paper</concept_desc>
-  <concept_significance>100</concept_significance>
- </concept>
-</ccs2012>
-\end{CCSXML}
+%\begin{CCSXML}
+%<ccs2012>
+% <concept>
+%  <concept_id>00000000.0000000.0000000</concept_id>
+%  <concept_desc>Do Not Use This Code, Generate the Correct Terms for Your Paper</concept_desc>
+%  <concept_significance>500</concept_significance>
+% </concept>
+% <concept>
+%  <concept_id>00000000.00000000.00000000</concept_id>
+%  <concept_desc>Do Not Use This Code, Generate the Correct Terms for Your Paper</concept_desc>
+%  <concept_significance>300</concept_significance>
+% </concept>
+% <concept>
+%  <concept_id>00000000.00000000.00000000</concept_id>
+%  <concept_desc>Do Not Use This Code, Generate the Correct Terms for Your Paper</concept_desc>
+%  <concept_significance>100</concept_significance>
+% </concept>
+% <concept>
+%  <concept_id>00000000.00000000.00000000</concept_id>
+%  <concept_desc>Do Not Use This Code, Generate the Correct Terms for Your Paper</concept_desc>
+%  <concept_significance>100</concept_significance>
+% </concept>
+%</ccs2012>
+%\end{CCSXML}
 
-\ccsdesc[500]{Do Not Use This Code~Generate the Correct Terms for Your Paper}
-\ccsdesc[300]{Do Not Use This Code~Generate the Correct Terms for Your Paper}
-\ccsdesc{Do Not Use This Code~Generate the Correct Terms for Your Paper}
-\ccsdesc[100]{Do Not Use This Code~Generate the Correct Terms for Your Paper}
+%\ccsdesc[500]{Do Not Use This Code~Generate the Correct Terms for Your Paper}
+%\ccsdesc[300]{Do Not Use This Code~Generate the Correct Terms for Your Paper}
+%\ccsdesc{Do Not Use This Code~Generate the Correct Terms for Your Paper}
+%\ccsdesc[100]{Do Not Use This Code~Generate the Correct Terms for Your Paper}
+
 
 %%
 %% Keywords. The author(s) should pick words that accurately describe
 %% the work being presented. Separate the keywords with commas.
-\keywords{Do, Not, Us, This, Code, Put, the, Correct, Terms, for,
-  Your, Paper}
+%\keywords{Do, Not, Us, This, Code, Put, the, Correct, Terms, for,
+%  Your, Paper}
 
-\received{20 February 2007}
-\received[revised]{12 March 2009}
-\received[accepted]{5 June 2009}
+%\received{20 February 2007}
+%\received[revised]{12 March 2009}
+%\received[accepted]{5 June 2009}
 
 %%
 %% This command processes the author and affiliation and title
@@ -213,13 +311,41 @@
 \maketitle
 
 \section{Introduction}
+  
+  Operator fusion is a crucial optimization for computation graphs.
+  Given a graph whose evaluation would dispatch many kernel launches,
+  many of which do little more than loading data,
+  performing a minor transformation on it,
+  and storing it back to memory,
+  it fuses them into a few kernels loading data once and
+  doing many operaters' computations on said data.
+  
+  Determining \emph{which} operators to fuse, however,
+  is not trivial,
+  as many fusions cause duplication of work,
+  resulting in a balancing act,
+  where too many fusions recompute the same value over and over again,
+  while too few fusions waste performance on loading and storing large amounts
+  of data from and to memory.
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+  As the total search space is infeasibly large,
+  having $2^{|E|}$ where $|E|$ is the number of edges, possible fusion configurations,
+  existing methods try to find good fusions using heuristics.
+  However heuristics do not know the global optimum,
+  as they are not exhaustive.
+  A method exists for doing exhaustive search in a related problem (function inlining),
+  but it has not been applied to operator fusion.
+
+  We applied that method, \recpart, to operator fusion.
+  We introduced additional search space reductions,
+  benchmarked resulting fusion configurations against the baseline,
+  and modeled the scaling properties of the search space under \recpart.
+
+  We found that \recpart's search space reduction was not enough,
+  even after adding additional reductions,
+  as the search space still grows exponentially with a comparatively high base.
+
+
 
 %\begin{tikzpicture}
 %\pgfplotstableread[col sep=comma]{data/small/results.csv}\datatablesmall
@@ -231,379 +357,448 @@ proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 %\end{axis}
 %\end{tikzpicture}
 
-
+% Wie genau implementiert
+% Related work
+% Future work
+% limitation
+% discussion
 
 \section{Background}
 
-\subsection{Operator Fusion}
+  This section provides the needed background on computation graphs,
+  operator fusion, \recpart, and how an technique from function inlining
+  translates to operator fusion.
 
-\begin{figure}[t]
-  \begin{subfigure}[b]{0.45\linewidth}
-    \centering
-    \begin{tikzpicture}
-    \begin{scope}
-      [ every node/.style={circle,draw,thick}
-      , every edge/.style={draw,thick}
-      ]
-      \node (2)  at (0  ,1.5 ) {$2$};
-      \node (A)  at (1  ,1.5 ) {$A$};
-      \node (B)  at (2  ,1.5 ) {$B$};
-      \node (t1) at (0.5,0.75) {$\times$};
-      \node (t2) at (1.5,0.75) {$\times$};
-      \node (p)  at (1  ,0   ) {$+$}[draw=blue];
+  \subsection{Operator Fusion}
 
-      \path [->] (A) edge (t1);
-      \path [->] (A) edge (t2);
-      \path [->] (B) edge (t2);
-      \path [->] (2) edge (t1);
-      \path [->] (t1) edge (p);
-      \path [->] (t2) edge (p);
-    \end{scope}
-    \end{tikzpicture}
-    \caption{$2A+AB$}
-    \label{fig:compgraph:expr}
-  \end{subfigure}
-  %
-  \hfill
-  %
-  \begin{subfigure}[b]{0.45\linewidth}
-    \centering
-    \begin{tikzpicture}
-    \begin{scope}
-      [ every node/.style={circle,draw,thick}
-      , every edge/.style={draw,thick}
-      ]
-      \node (A) at (0.5,1.5 ) {$A$};
-      \node (B) at (1  ,0.75) {$B$};
-      \node (T) at (0  ,0.75) {$\top$};
-      \node (M) at (0.5,0   ) {$\bullet$}[draw=blue];
+    This section explains computation graphs and operator fusion
+    and the necessary terminology.
 
-      \path [->] (A) edge (T);
-      \path [->] (T) edge (M);
-      \path [->] (B) edge (M);
-    \end{scope}
-    \end{tikzpicture}
-    \caption{$A^\top B$}
-    \label{fig:compgraph:linalg}
-  \end{subfigure}
+    \begin{figure}[t]
+      \begin{subfigure}[b]{0.45\linewidth}
+        \centering
+        \begin{tikzpicture}
+        \begin{scope}
+          [ every node/.style={circle,draw,thick}
+          , every edge/.style={draw,thick}
+          ]
+          \node (2)  at (0  ,1.5 ) {$2$};
+          \node (A)  at (1  ,1.5 ) {$A$};
+          \node (B)  at (2  ,1.5 ) {$B$};
+          \node (t1) at (0.5,0.75) {$\times$};
+          \node (t2) at (1.5,0.75) {$\times$};
+          \node (p)  at (1  ,0   ) {$+$}[draw=blue];
 
+          \path [->] (A) edge (t1);
+          \path [->] (A) edge (t2);
+          \path [->] (B) edge (t2);
+          \path [->] (2) edge (t1);
+          \path [->] (t1) edge (p);
+          \path [->] (t2) edge (p);
+        \end{scope}
+        \end{tikzpicture}
+        \caption{$2A+AB$}
+        \label{fig:compgraph:expr}
+      \end{subfigure}
+      %
+      \hfill
+      %
+      \begin{subfigure}[b]{0.45\linewidth}
+        \centering
+        \begin{tikzpicture}
+        \begin{scope}
+          [ every node/.style={circle,draw,thick}
+          , every edge/.style={draw,thick}
+          ]
+          \node (A) at (0.5,1.5 ) {$A$};
+          \node (B) at (1  ,0.75) {$B$};
+          \node (T) at (0  ,0.75) {$\top$};
+          \node (M) at (0.5,0   ) {$\bullet$}[draw=blue];
 
-  \caption{Example: Showing how expressions can be represented as a computation graphs.
-  The marked node is the so-called \emph{root node} of the computation and represents the final output.}
-  \label{fig:compgraph}
-  \Description{Two computation graphs side by side, showing how expressions can be represented as computation graphs. The left represents $2A+AB$, the right represents $A^\top B$.}
-\end{figure}
-
-Computation graphs model computation as a directed graph,
-where nodes are operators transforming data and edges are the values
-flowing from one operator to the next
-\cite{survey2020},
-examples of which are shown in Figure~\ref{fig:compgraph}.
-As neural networks can naturally be expressed as computation graphs\cite{survey2020},
-where the operators are tensor operations working on large tensors,
-optimizing, compiling, and evaluating large computation graphs has become important\cite{survey2020}.
-
-To leverage their high compute capabilities,
-tooling often evaluates such computation graphs on GPUs,
-by dispatching a compute kernel for every operator in the graph,
-passing it memory buffers storing their inputs,
-and memory buffers for them to store their outputs\ncite.
-This approach, however, results in each operator of the
-evaluated computation graph costing\ncite
-\begin{itemize}
-\item A memory read for the inputs
-\item A memory write for the result
-\item A kernel dispatch, with all the overhead that brings with it
-\end{itemize}
-
-For many of the cheaper operators, these costs \emph{greatly} overshadow
-the actual compute cost of the operator\ncite.
-To address this, computation graph compilers employ an optimization called \emph{operator fusion},
-which fuses an operator \emph{producing} a value (the so-called \emph{producer})
-into an operator \emph{consuming} that value (the so-called \emph{consumer}),
-yielding a new operator, which performs the computation of \emph{both}
-unfused operators.
-
-For example, in Figure~\ref{fig:compgraph:linalg},
-the operator $\top$ (matrix transpose) can be fused into its only consumer,
-the matrix multiplication, yielding a fused operator, which performs matrix multiplication,
-% TODO: "transposed fashion" is weird wording
-but reads its left-hand-side in a transposed fashion, thus eliminating the need to
-generate and dispatch (i.e., materialize) the transpose operator into its own kernel,
-saving both the kernel dispatch and the memory round-trip.
-
-Fusing an edge \edge{A}{B} on a computation graph
-leads to the following changes on the graph:
-\begin{itemize}
-\item
-% TODO: decide on a style
-$B$ is replaced with $B'$ (sometimes written $AB$),
-which is the new operator performing both $B$ \emph{and} $A$.
-
-\item
-The edge \edge{A}{B} is removed as the new operator
-$B'$ no longer needs the result of operator $A$ since it computes it directly.
-
-\item
-If after the above step $A$ no longer has any outgoing edges
-(i.e., $B$ was the only operator using $A$'s result),
-the node $A$ can be removed.
-Otherwise, $A$ remains since other operators still use its result.
-% TODO: we can only remove the vertex if it has no edges, not just no outgoing ones
-
-\item
-As the operator $B$ now computes what $A$ would have computed,
-$B$ inherits all dependencies on other operators that $A$ had,
-so the node $B'$ gains incoming edges from all direct predecessors of $A$.
-\end{itemize}
-
-Whether a given edge can be fused is determined by the computation graph compiler's backend's
-ability to generate a performant kernel for a given fusion,
-so backend restrictions apply\cite{xla2023}.
-
-\begin{figure}[t]
-  \begin{subfigure}[b]{0.45\linewidth}
-    \centering
-    \begin{tikzpicture}
-    \begin{scope}
-      [ every node/.style={circle,draw,thick}
-      , every edge/.style={draw,thick}
-      ]
-      \node (A) at (0,1) {A};
-      \node (B) at (1,0) {B};
-      \node (C) at (2,1) {C};
-      \node (D) at (3,0) {D};
-
-      \path [->] (A) edge (B);
-      \path [->] (B) edge (C)[draw=blue];
-      \path [->] (B) edge (D);
-      \path [->] (C) edge (D);
-    \end{scope}
-    \end{tikzpicture}
-    \caption{Original}
-    \label{fig:fusing:orig}
-  \end{subfigure}
-  %
-  \hfill
-  %
-  \begin{subfigure}[b]{0.45\linewidth}
-    \centering
-    \begin{tikzpicture}
-    \begin{scope}
-      [ every node/.style={circle,draw,thick}
-      , every edge/.style={draw,thick}
-      ]
-      \node (A) at (0,1) {A};
-      \node (B) at (1,0) {B};
-      \node (C) at (2,1) {C'};
-      \node (D) at (3,0) {D};
-
-      \path [->] (A) edge (B);
-      \path [->] (A) edge (C);
-      \path [->] (B) edge (D);
-      \path [->] (C) edge (D);
-    \end{scope}
-    \end{tikzpicture}
-    \caption{Fused}
-    \label{fig:fusing:fused}
-  \end{subfigure}
-
-  \caption{Example: Showing the effect of fusing the edge \edge{B}{C}. The edge \edge{A}{B} is duplicated as the new edge \edge{A}{C'}. The newly fused $C'$ operator no longer depends on $B$, but it has inherited all dependencies of $B$, in this case $A$.}
-  \label{fig:fusing}
-  \Description{Two computation graphs side by side. The left shows the original graph, the right shows the graph after fusing the nodes B and C into BC}
-\end{figure}
-
-Fusing all fusible edges, however, does not necessarily yield the best result,
-as fusions incur the following costs:
-\begin{itemize}
-\item
-As the kernels for fused operators are generated automatically by the backend,
-quality and performance of the generated kernels may be poor when fusing
-two complex operators\cite{xla2023}.
-
-\item
-When fusing an operator into multiple consumers,
-the computation associated with the operator is effectively duplicated,
-as it is computed again by \emph{every} consumer\cite{xla2023}.
-
-\end{itemize}
-Therefore, optimizing a computation graph entails finding good fusions,
-which presents an optimization problem.
-To tackle this optimization problem,
-we borrow a technique from function inlining as introduced in the next section.
+          \path [->] (A) edge (T);
+          \path [->] (T) edge (M);
+          \path [->] (B) edge (M);
+        \end{scope}
+        \end{tikzpicture}
+        \caption{$A^\top B$}
+        \label{fig:compgraph:linalg}
+      \end{subfigure}
 
 
-% TODO: This should be in there:
-%For example as seen in Figure~\ref{fig:fusing}, $B$ is fused into $C$ but not into $D$,
-%so $B$ still gets materialized,
-%and we still pay the cost of its memory interactions and the kernel dispatch.
+      \caption{Example: Showing how expressions can be represented as a computation graphs.
+      The marked node is the so-called \emph{root node} of the computation and represents the final output.}
+      \label{fig:compgraph}
+      \Description{Two computation graphs side by side, showing how expressions can be represented as computation graphs. The left represents $2A+AB$, the right represents $A^\top B$.}
+    \end{figure}
 
-%Considering the main goal of operator fusion of eliminating memory interactions and kernel
-%dispatches, fusing a producer into only \emph{some} of its consumers such that the original
-%kernel producing it still gets materialized is generally hard to justify.
+    Computation graphs model computation as a directed graph,
+    where nodes are operators transforming data and edges are the values
+    flowing from one operator to the next
+    \cite{survey2020},
+    examples of which are shown in Figure~\ref{fig:compgraph}.
+    As neural networks can naturally be expressed as computation graphs,
+    where the operators are tensor operations working on large tensors,
+    optimizing, compiling, and evaluating large computation graphs has become important.
 
-%As such,
-%we will only look at the case in which operators are fused into \emph{all} of their consumers.
+    To leverage their high compute capabilities,
+    tooling often evaluates such computation graphs on GPUs,
+    by dispatching a compute kernel for every operator in the graph,
+    passing it memory buffers storing their inputs,
+    and memory buffers for them to store their outputs\ncite.
+    This approach, however, results in each operator of the
+    evaluated computation graph costing\ncite
+    \begin{itemize}
+      \item A memory read for the inputs
+      \item A memory write for the result
+      \item A kernel dispatch, with all the overhead that brings with it
+    \end{itemize}
 
-% TODO: Reason it
+    For many of the cheaper operators, these costs \emph{greatly} overshadow
+    the actual compute cost of the operator\ncite.
+    To address this, computation graph compilers employ an optimization called \emph{operator fusion},
+    which fuses an operator \emph{producing} a value (the so-called \emph{producer})
+    into an operator \emph{consuming} that value (the so-called \emph{consumer}),
+    yielding a new operator, which performs the computation of \emph{both}
+    unfused operators.
+    This eliminates the need to store the result to memory, and to load it again for the consumer,
+    saving the expensive memory interaction cost.
 
+    For example, in Figure~\ref{fig:compgraph:linalg},
+    the operator $\top$ (matrix transpose) can be fused into its only consumer,
+    the matrix multiplication, yielding a fused operator, which performs matrix multiplication,
+    % TODO: "transposed fashion" is weird wording
+    but reads its left-hand-side in a transposed fashion, thus eliminating the need to
+    generate and dispatch (i.e., materialize) the transpose operator into its own kernel,
+    saving both the kernel dispatch and the memory round-trip.
 
+    Fusing an edge \edge{A}{B} on a computation graph
+    leads to the following changes on the graph:
+    \begin{itemize}
+      \item
+      % TODO: decide on a style
+      $B$ is replaced with $B'$ (sometimes written $AB$),
+      which is the new operator performing both $B$ \emph{and} $A$.
 
+      \item
+      The edge \edge{A}{B} is removed as the new operator
+      $B'$ no longer needs the result of operator $A$ since it computes it directly.
 
-\subsection{Relating Function Inlining to Operator Fusion}
-\label{sect:correspondence}
+      \item
+      If after the above step $A$ no longer has any outgoing edges
+      (i.e., $B$ was the only operator using $A$'s result),
+      the node $A$ can be removed.
+      Otherwise, $A$ remains since other operators still use its result.
+      % TODO: we can only remove the vertex if it has no edges, not just no outgoing ones
 
-When compiling programs,
-a common optimization is \emph{function inlining},
-in which a function call site is replaced with the called function's body\cite[Section 2]{recpart-paper}.
-The goal is to\cite[Section 2]{recpart-paper}
-\begin{itemize}
-\item
-remove function call overhead such as the called function's prologue and epilogue.
-
-\item
-extend the analysis scope of the compiler.
-\end{itemize}
-
-
-Function inlining operates on the program's \emph{call graph},
-which is a directed graph mapping each function to a vertex
-and each call site to a directed edge \edge{A}{B},
-where $A$ is the function \emph{containing} the call site,
-and $B$ is the function being \emph{called}.
-Therefore, inlining the call site \edge{A}{B} has the following effects on the call graph:
-\begin{itemize}
-\item
-$A$ is replaced with $A'$ (sometimes written $AB$),
-which is the body of $A$ with the call site of \edge{A}{B}
-replaced with the body of $B$.
-
-\item
-The edge \edge{A}{B} is removed as replacing the
-call site removed the call.
-
-\item
-If after the above step $B$ no longer has any incoming edges
-(i.e., \edge{A}{B} was the only call site calling $B$),
-the node $B$ can be removed.
-Otherwise, $B$ remains since other functions still call it.
-
-\item
-As the body of $B$ is inserted into the body of $A$,
-$A$ inherits all call sites residing in $B$,
-so the node $A'$ gains edges to all direct successors of $B$.
-\end{itemize}
-As the call graph modifications show,
-the operations performed on the call graph when inlining a function
-map one-to-one to the operations performed on a computation graph
-when fusing operators, but the direction of the directed edges is notably reversed.
-For example, inlining an edge \edge{A}{B} on a call graph performs \emph{the same} modification
-on the call graph as fusing an edge \edge{B}{A} would on a computation graph.
+      \item
+      As the operator $B$ now computes what $A$ would have computed,
+      $B$ inherits all dependencies on other operators that $A$ had,
+      so the node $B'$ gains incoming edges from all direct predecessors of $A$.
+    \end{itemize}
 
 
-\subsection{Recursively Partitioned Search Space}
+    \begin{figure}[t]\label{fig:fusing}
+      \begin{subfigure}[b]{0.45\linewidth}\label{fig:fusing:orig}
+        \centering
+        \begin{tikzpicture}
+        \begin{scope}
+          [ every node/.style={circle,draw,thick}
+          , every edge/.style={draw,thick}
+          ]
+          \node (A) at (0,1) {A};
+          \node (B) at (1,0) {B};
+          \node (C) at (2,1) {C};
+          \node (D) at (3,0) {D};
 
-When trying to find the optimal call sites to inline,
-a naïve apporach is to evaluate every possible \emph{inlining configuration},
-which is an assignment of $\{\text{inline},\text{no-inline}\}$ to the call sites.
-This entails evaluating $2^n$ cases,
-where $n$ is the number of call sites,
-which, while feasible for smaller programs,
-becomes infeasible as the number of call sites grows.
+          \path [->] (A) edge (B);
+          \path [->] (B) edge (C)[draw=blue];
+          \path [->] (B) edge (D);
+          \path [->] (C) edge (D);
+        \end{scope}
+        \end{tikzpicture}
+        \caption{Original}
+      \end{subfigure}
+      %
+      \hfill
+      %
+      \begin{subfigure}[b]{0.45\linewidth}\label{fig:fusing:fused}
+        \centering
+        \begin{tikzpicture}
+        \begin{scope}
+          [ every node/.style={circle,draw,thick}
+          , every edge/.style={draw,thick}
+          ]
+          \node (A) at (0,1) {A};
+          \node (B) at (1,0) {B};
+          \node (C) at (2,1) {C'};
+          \node (D) at (3,0) {D};
 
-To reduce this search space,
-\citet{recpart-paper} introduced a technique that exploits the connectivity of
-the call graph to reduce the number of configurations evaluated,
-while remaining exact.
+          \path [->] (A) edge (B);
+          \path [->] (A) edge (C);
+          \path [->] (B) edge (D);
+          \path [->] (C) edge (D);
+        \end{scope}
+        \end{tikzpicture}
+        \caption{Fused}
+      \end{subfigure}
 
-Their key insight is that if a graph contains two or more connected components,
-each can be searched independently\cite[Section 3]{recpart-paper},
-as an inlining decision in one subgraph cannot affect an inlining decision in another.
-This considerably reduces the search space,
-since $|C_G| = \sum_{g\in {cc}_G} |C_g|$,
-as opposed to $\prod_{g\in {cc}_G} |C_g|$,
-where $C_x$ are the searched inlining configurations of a graph $x$,
-and ${cc}_G$ are the connected components of $G$.
+      \caption{Example: Showing the effect of fusing the edge \edge{B}{C}. The edge \edge{A}{B} is duplicated as the new edge \edge{A}{C'}. The newly fused $C'$ operator no longer depends on $B$, but it has inherited all dependencies of $B$, in this case $A$.}
+      \Description{Two computation graphs side by side. The left shows the original graph, the right shows the graph after fusing the nodes B and C into BC}
+    \end{figure}
 
-Building on this insight, they proposed their technique of recursively partitioned search space
-(hereafter called the recursive partitioning method),
-which models $C_G$ as a tree where each leaf represents an inlining configuration
-for the whole graph $G$ or a subgraph thereof\cite[Section 3.2]{recpart-paper}.
-The tree is unfolded from the root by taking the graph $G$, picking an edge,
-and exploring both options recursively by modifying the graph accordingly:
+    Partial fusions refer to fusions in which a producer is only fused into \emph{some} of its consumers,
+    resulting in its kernel getting materialized.
+    An example of this is shown in Figure~\ref{fig:fusing},
+    where $B$ only gets fused into $C$, but not $D$.
+    The following comparison of the costs associated with $B$ before and
+    after the partial fusion illustrated how a partial fusion can be beneficial,
+    and why it often is not:
+    \begin{itemize}
+      \nitem{Before the partial fustion}
+      \begin{itemize}
+        \item Memory read for $B$'s inputs
+        \item Compute cost to compute $B$'s result
+        \item Memory write to store $B$'s result
+        \item Memory read of $B$'s result for $C$
+      \end{itemize}
 
-\begin{itemize}
-\item {$\text{inline}$}:
-The edge is merged on the graph
+      \nitem{After the partial fustion}
+      \begin{itemize}
+        \item Memory read for $B$'s inputs
+        \item Compute cost to compute $B$'s result
+        \item Memory write to store $B$'s result
+        \item Memory read of $B$'s inputs for $C'$
+        \item Compute cost to compute $B$'s result for $C'$
+      \end{itemize}
+    \end{itemize}
+    All the costs with $B$'s materialized kernel remain,
+    but the cost of loading its result for $C$ is replaced
+    with the cost of loading $B$'s inputs and computing its result inside $C'$.
+    As a result, partial fusions improve performance only in the following scenarios:
+    \begin{enumerate}
+      \item
+      When the combined cost of loading $B$'s inputs and computing its result is lower than
+      the cost of simply loading its result.
 
-\item {$\text{no-inline}$}:
-Not inlining the edge is identical to deleting it \wrt\ inlining,
-so the edge is deleted.
-\end{itemize}
+      \item
+      When $C$ already depends on all of $B$'s inputs,
+      the cost of loading its result only has to outweigh its compute cost.
 
-Both of the above mentioned modifications
-can split the graph into multiple connected components,
-specifically, if a bridge\footnote{
-A bridge is an edge of a graph,
-whose removal splits the graph into two connected components
-}
-was removed in the $\text{no-inline}$ case,
-or if a bridge \edge{A}{B} was merged where $B$ has no successors but other incoming edges.
-If this is the case, each connected component is recursively unfolded\cite[Section 3.2]{recpart-paper}.
+    \end{enumerate}
+    Notably, however, in case (1), the same argument can be made for
+    fusing $B$ into \emph{any} of its consumers,
+    so fusing $B$ into \emph{all} its consumers makes more sense.
 
-Therefore, the tree consists of three kinds of nodes:
-\begin{itemize}
-\item {\code{InliningTreeLeafs}}:
-A leaf where a decision has been made for every edge of the original graph
-or a subgraph thereof,
-representing an inlining configuration
+    Whether a given edge can be fused is determined by the computation graph compiler's backend's
+    ability to generate a performant kernel for a given fusion,
+    so backend restrictions apply\cite{xla2023}.
+    For example operators representing library functions from a vendor-optimized library
+    cannot participate in operator fusion,
+    as the backend cannot see into the kernel called by the library.
 
-\item {\code{InliningTreeBinaryNodes}}:
-Node with 2 children,
-representing exploring both cases for a given edge recursively
+    Fusing all fusible edges, however, does not necessarily yield the best result,
+    as fusions incur the following costs:
+    \begin{itemize}
+      \item
+      As the kernels for fused operators are generated automatically by the backend,
+      quality and performance of the generated kernels may be poor when fusing
+      two complex operators.
 
-\item {\code{InliningTreeComponentsNodes}}:
-Node with multiple children,
-representing exploring all connected components of a disconnected graph independently.
-\end{itemize}
+      \item
+      When fusing an operator into multiple consumers,
+      the computation associated with the operator is effectively duplicated,
+      as it is computed again by \emph{every} consumer.
 
-It then folds that tree back into the optimal inlining configuration
-\wrt\ a cost metric to be minimized as follows:
-\begin{itemize}
-\item {\code{InliningTreeLeafs}}:
-Evaluate the leaf inlining configuration on its cost,
-yielding both the cost and the configuration.
+    \end{itemize}
+    Therefore, optimizing a computation graph entails finding good fusions,
+    which presents an optimization problem.
+    To tackle this optimization problem,
+    we borrow a technique from function inlining as introduced in the next section.
 
-\item {\code{InliningTreeBinaryNodes}}:
-Compare the costs of both children,
-passing along the cost and configuration of the lower-cost one.
 
-\item {\code{InliningTreeComponentsNodes}}:
-Combine the optimal configurations of all children into a collective one,
-evaluate its cost,
-and yield the combined configuration and the resulting cost
-\end{itemize}
+  \subsection{Relating Function Inlining to Operator Fusion}\label{sect:correspondence}
 
-While \citet{recpart-paper} uses binary size as a cost metric,
-the recursive partitioning method works irrespective of what metric is optimized.
+    This section introduces the necessary function inlining concepts needed for \recpart,
+    draws parallels between function inlining and operator fusion,
+    and demonstrates how the graph modifications involved in the two transformations
+    are equivalent.
 
-As the search space reduction of this method is a direct result of exploring
-connected components separately,
-it is important to pick edges whose removal produces multiple connected components often.
-Thus, care must be taken picking a good bridge if a graph has bridges
-and picking a good edge in the absence of bridges.
-For this purpose, they employed heuristics to pick central bridges,
-and pick edges that reduce high out degrees and create as many bridges as possible
-if no bridge exists\cite[Section 3.2]{recpart-paper}.
+    When compiling programs,
+    a common optimization is \emph{function inlining},
+    in which a function call site is replaced with the called function's body\cite{recpart-paper}.
+    The goal is to
+    \begin{itemize}
+      \item
+      remove function call overhead such as the called function's prologue and epilogue.
 
-Using the recursive partitioning method,
-they showed that they could reduce the search space for optimally inlining
-SPEC2017 from $2^{349}$ to $2^{25}$\cite[Section 4.1]{recpart-paper},
-enabling an exhaustive search.
+      \item
+      extend the analysis scope of the compiler.
+    \end{itemize}
 
-Because of the correspondence pointed out in Section~\ref{sect:correspondence},
-the recursive partitioning method can be applied to find the optimal
-operator fusion configuration of computation graphs.
+    \begin{table*}[t]\label{tab:correspondence}
+      \begin{tabular}{ccc}
+        \toprule
+        Call graphs \& function inlining & Computation graphs \& operator fusion & Graph element or operation \\
+        \midrule
+        Function                      & Operator                                    & Vertex                                           \\
+        Function call ($A$ calls $B$) & Data flow ($A$'s result is consumed by $B$) & Directed edge \edge{A}{B}                        \\
+        $A$ is a caller of $B$        & $A$ is a producer to $B$                    & (\edge{A}{B}) $A$ is a direct predecessor of $B$ \\
+        $B$ is called by $A$          & $B$ is a consumer of $A$                    & (\edge{A}{B}) $B$ is a direct successor of $A$   \\
+        $B$ is inlined into $A$       & $A$ is fused into $B$                       & \edge{A}{B} merges                               \\
+        \bottomrule
+      \end{tabular}
+      \caption{Showing correspondence of elements}
+    \end{table*}
+
+    Function inlining operates on the program's \emph{call graph},
+    which is a directed graph mapping each function to a vertex
+    and each call site to a directed edge \edge{A}{B},
+    where $A$ is the function \emph{containing} the call site,
+    and $B$ is the function being \emph{called}.
+    Therefore, inlining the call site \edge{A}{B} has the following effects on the call graph:
+    \begin{itemize}
+      \item
+      $A$ is replaced with $A'$ (sometimes written $AB$),
+      which is the body of $A$ with the call site of \edge{A}{B}
+      replaced with the body of $B$.
+
+      \item
+      The edge \edge{A}{B} is removed as replacing the
+      call site removed the call.
+
+      \item
+      If after the above step $B$ no longer has any incoming edges
+      (i.e., \edge{A}{B} was the only call site calling $B$),
+      the node $B$ can be removed.
+      Otherwise, $B$ remains since other functions still call it.
+
+      \item
+      As the body of $B$ is inserted into the body of $A$,
+      $A$ inherits all call sites residing in $B$,
+      so the node $A'$ gains edges to all direct successors of $B$.
+    \end{itemize}
+    As the call graph modifications show,
+    the operations performed on the call graph when inlining a function
+    map one-to-one to the operations performed on a computation graph
+    when fusing operators, but the direction of the directed edges is notably reversed.
+    For example, inlining an edge \edge{A}{B} on a call graph performs \emph{the same} modification
+    on the call graph as fusing an edge \edge{B}{A} would on a computation graph.
+    Table~\ref{tab:correspondence} illustrates the correspondence.
+
+  \subsection{Recursively Partitioned Search Space}
+
+    When trying to find the optimal call sites to inline,
+    a naïve apporach is to evaluate every possible \emph{inlining configuration},
+    which is an assignment of $\{\text{inline},\text{no-inline}\}$ to the call sites.
+    This entails evaluating $2^n$ cases,
+    where $n$ is the number of call sites,
+    which, while feasible for smaller programs,
+    becomes infeasible as the number of call sites grows.
+
+    To reduce this search space,
+    \citet{recpart-paper} introduced a technique that exploits the connectivity of
+    the call graph to reduce the number of configurations evaluated,
+    while remaining exact.
+
+    Their key insight is that if a graph contains two or more connected components,
+    each can be searched independently,
+    as an inlining decision in one subgraph cannot affect an inlining decision in another.
+    This considerably reduces the search space,
+    since $|C_G| = \sum_{g\in {cc}_G} |C_g|$,
+    as opposed to $\prod_{g\in {cc}_G} |C_g|$,
+    where $C_x$ are the searched inlining configurations of a graph $x$,
+    and ${cc}_G$ are the connected components of $G$.
+
+    Building on this insight, they proposed their technique of recursively partitioned search space
+    (hereafter called the recursive partitioning method),
+    which models $C_G$ as a tree where each leaf represents an inlining configuration
+    for the whole graph $G$ or a subgraph thereof.
+    The tree is unfolded from the root by taking the graph $G$, picking an edge,
+    and exploring both options recursively by modifying the graph accordingly:
+
+    \begin{itemize}
+      \nitem{$\text{inline}$}
+      The edge is merged on the graph
+
+      \nitem{$\text{no-inline}$}
+      Not inlining the edge is identical to deleting it \wrt\ inlining,
+      so the edge is deleted.
+    \end{itemize}
+
+    Both of the above mentioned modifications
+    can split the graph into multiple connected components,
+    specifically, if a bridge\footnote{
+    A bridge is an edge of a graph,
+    whose removal splits the graph into two connected components
+    }
+    was removed in the $\text{no-inline}$ case,
+    or if a bridge \edge{A}{B} was merged where $B$ has no successors but other incoming edges.
+    If this is the case, each connected component is recursively unfolded.
+
+    Therefore, the tree consists of three kinds of nodes:
+    \begin{itemize}
+      \nitem{\code{InliningTreeLeafs}}
+      A leaf where a decision has been made for every edge of the original graph
+      or a subgraph thereof,
+      representing an inlining configuration
+
+      \nitem{\code{InliningTreeBinaryNodes}}
+      Node with 2 children,
+      representing exploring both cases for a given edge recursively
+
+      \nitem{\code{InliningTreeComponentsNodes}}
+      Node with multiple children,
+      representing exploring all connected components of a disconnected graph independently.
+    \end{itemize}
+
+    It then folds that tree back into the optimal inlining configuration
+    \wrt\ a cost metric to be minimized as follows:
+    \begin{itemize}
+      \nitem{\code{InliningTreeLeafs}}
+      Evaluate the leaf inlining configuration on its cost,
+      yielding both the cost and the configuration.
+
+      \nitem{\code{InliningTreeBinaryNodes}}
+      Compare the costs of both children,
+      passing along the cost and configuration of the lower-cost one.
+
+      \nitem{\code{InliningTreeComponentsNodes}}
+      Combine the optimal configurations of all children into a collective one,
+      evaluate its cost,
+      and yield the combined configuration and the resulting cost
+    \end{itemize}
+
+    While \citet{recpart-paper} uses binary size as a cost metric,
+    the recursive partitioning method works irrespective of what metric is optimized.
+
+    As the search space reduction of this method is a direct result of exploring
+    connected components separately,
+    it is important to pick edges whose removal produces multiple connected components often.
+    Thus, care must be taken picking a good bridge if a graph has bridges
+    and picking a good edge in the absence of bridges.
+    For this purpose, they employed heuristics to pick central bridges,
+    and pick edges that reduce high out degrees and create as many bridges as possible
+    if no bridge exists.
+
+    As a result, speedup heavily depends on graph topology, as that determines the frequency of bridges.
+    For example in a simple line
+    $A\rightarrow B\rightarrow C\rightarrow D\rightarrow E\rightarrow F$
+    every single edge is a bridge, so on every iteration it gets to split the graph.
+    A star like
+    $\{\edgem{A}{B},\edgem{A}{C},\edgem{A}{D},\edgem{A}{E},\edgem{A}{F}\}$
+    would see no speedup as this graph would never contain a bridge.
+
+    Using the recursive partitioning method,
+    they showed that they could reduce the search space for optimally inlining
+    SPEC2017 from $2^{349}$ to $2^{25}$,
+    enabling an exhaustive search.
+
+    Because of the correspondence pointed out in Section~\ref{sect:correspondence},
+    the recursive partitioning method can be applied to find the optimal
+    operator fusion configuration of computation graphs.
+
+    % TODO: somewhere here bring up that effective speedup and evalcount scaling is dependant on graph structure
+    % TODO: something something "best case _would_ be linear (or whatever runtime), but on imperfect cases still is exponential (is it) -> just different base"
 
 % als subsections
 %  recpart isch background für mich
@@ -615,15 +810,785 @@ operator fusion configuration of computation graphs.
 % - limitations and future work
 %
 
+\section{Methods}
+  \subsection{XLA}
+
+    XLA is a computation graph compiler and evaluator
+    that can be targeted by tensorflow, JAX and PyTorch
+    and supports running models on CPUs, GPUs and other accelarators.
+    It consumes so-called HLO modules,
+    which can contain multiple computation graphs,
+    with one being marked as the root computation of the module.
+    Each computation is defined using their HLO operations,
+    connected using static single assignment (SSA),
+    some of which can reference other computations,
+    such as reductions over tensors and more importantly fusions.
+
+    Fusions are described by referencing another computation in the same module
+    and having the backends convert that other computation to a single operator,
+    in the GPU backend's case turning that computation into a singular kernel.
+
+    Like many other compilers,
+    XLA compiles computation graphs via passes analyzing or modifying a module,
+    before passing it to a target-specific backend for final lowering.
+    While many passes of the pipeline generate fusion instructions,
+    most of the fusions are generated in a fusion pipeline. % TODO: verify
+
+    % TODO: note that it's only in the GPU pipeline
+    To generate fusions ourselves
+    and to facilitate interacting with XLA in general,
+    we created 3 passes running at key steps in XLA's pipelines.
+    Each pass takes some arguments from the process environment,
+    returning immediatly when its parameters are not defined in the environment
+    without performing any modifications to the module,
+    effectively disableing the pass:
+    \begin{itemize}
+      \nitem{\code{ForwardFusion}} dumps the state of the module very early on before many optimizations
+      just before the fusion pipeline
+      to a file specified in its environment-passed argument
+      % TODO: rewrite as it's not just before fusion pipeline
+
+      \nitem{\code{ForceFusion}} reads a list of fusions to perform from an
+      environment-passed filename,
+      performing those fusions in order.
+      It runs just after \code{ForwardFusion} and before the fusion pipeline.
+      % TODO: ditto
+
+      \nitem{\code{QualityMetric}} uses XLA's internal runtime estimation mechanisms
+      to estimate the runtime of the root computation in nanoseconds,
+      returning that value through an environment-passed filename.
+      XLA's internal runtime estimation mechanisms take a description of a GPU
+      to model runtime on that GPU with a high degree of accuracy\ncite.
+      It runs after most optimizations,
+      at the latest point before many operations are rewritten using
+      GPU specifc intrinsics.
+    \end{itemize}
+    % explain openxla
+    % explain hlo modules
+    % Roughly explain compiler pipeline
+    % roughly explain runtime estimation
+    % How have I modified it
+
+    As fusions are such a crucial optimization for computation graphs,
+    many different passes, even normalization passes, generate fusions.
+    Instead of preventing fusions which we don't force,
+    we let the compiler produce fusions after our forced fusions
+    as it normaly would.
+    This has the helpful side-effect,
+    that passing an empty list of fusions is equivalent to
+    not having changed anything about fusions,
+    serving as a baseline for XLA's fusion process.
+
+  \subsection{Implementation of \recpart}
+
+    % TODO: at the right place bring up recpart is embarassingly parallel
+
+    The search for the optimal fusion configuration is implemented
+    via an external harness executing the XLA utility \code{hlo\_opt} to
+    \begin{itemize}
+      \item dump the graph to perform \recpart\ on.
+      \item evaluate configurations by forcing its fusions and having it
+      estimate the runtime with the given fusions.
+    \end{itemize}
+    The harness implements \recpart\ with the following
+    notable differences from \citet{recpart-paper}:
+    \begin{itemize}
+      \item
+      Instead of separately unfolding the tree and then evaluating it,
+      it implements one recursion doing both.
+
+      \item
+      Edge selection differs slightly in that when a graph contains multiple bridges,
+      it picks the one whose deletion produces the most balanced split
+      between the two subgraphs in terms of edge count.
+
+      \item
+      Instead of minimizing a cost metric,
+      the nanosecond runtime $c$, as returned from XLA,
+      is converted to a "quality" metric $q$ % TODO: maybe better formatting, and not ""
+      as $q=\frac{1}{c}$,
+      as to allow returning a quality metric of 0 in cases where \code{hlo\_opt} fails,
+      which can happen when non-sensical fusions are explored.
+      As \recpart\ only considers comparisons of different cost metrics
+      and negative cost metrics cannot occur,
+      this change does not change the optimization as long as
+      the comparisons are inverted.
+
+      \item
+      When propagating up the most optimal configuration,
+      if both candidate configurations have the same quality metric,
+      the one with fewer forced fusions is propagated up.
+      This is done such that the configuration forcing no fusions,
+      which is, as previously stated, equivalent to the baseline,
+      is the final returned optimal configuration if no configuration
+      manages to improve upon it,
+      making it easy to dismiss results that fail to improve on the baseline.
+      % TODO: verify ramifications are properly stated; "does this change anything about the searchspace/results?"
+    \end{itemize}
+
+
+    % TODO: maybe pseudocode?
+    % TODO: thread budget split?
+
+    As discussed in Section~\ref{sect:discussion},
+    \recpart\ is not enough to reduce the search space to a feasible degree,
+    so the following additional optimizations are introduced to further cut down
+    the search space:
+    \begin{itemize}
+      \item
+      XLA defines some operators as not being able to participate in fusions.
+      All edges to and from such operators are removed before \recpart.
+
+      \item
+      An option called \code{fuse-all-consumers} is introduced to only consider fusions where operators
+      are fused into all their consumers,
+      thus parital fusions are not considered.
+      % TODO: expand this paragraph as this is important for my thesis
+      % TODO: somewhere reason it
+
+      \item\label{sect:dropout}
+      A \emph{dropout} parameter is introduced to prune a specified ratio of the graph.
+      Edges to prune are selected by sorting the edges topologically, % TODO: check if proper
+      dropping edges from both the front and back of this edge list until enough edges are dropped.
+      If the resultant graph as multiple connected components,
+      the largest one in terms of edge count is searched by \recpart.
+
+      % TODO: maybe this belongs somewhere else?
+      While this has ramifications for the validity of the results
+      as explained in Section~\ref{sect:limitations},
+      the size of the search space searched with dropout is a lower bound
+      for the size of the full search space,
+      as the set of searched fusion configurations with dropout is a subset
+      of the set of searched fusion configurations without dropout.
+    \end{itemize}
+
+  \subsection{The modules that were optimized}
+    The HLO moduels searched for optimality were generated by
+    implementing common neural network architectures with Keras
+    and dumping their evaluation calls.
+    The architectures and their models used are as follows:
+    \begin{itemize}
+      \nitem{Image classifier}
+      Two sizes of image classifier were used:
+      A small MNIST handwritten digit classifier and a larger Cifar10 classifier
+
+      \nitem{Image segmentation}
+      A UNet image segmentation architecture
+
+      \nitem{Image Diffusion}
+      Two sizes of image diffusion models using a UNet architecture
+      with transformer blocks in their bottlenecks.
+
+      \nitem{Generative Pretrained Transformer (GPT)} % TODO: do this for all items with titles
+      Three sizes of autoregressive GPT models,
+      differing in dimensionality of latent token representation
+      and differing dimenstionality of the Key- and Value-vector
+      and the number of heads in their attention blocks.
+      As they only differ in the dimensionality of the tensors,
+      the graphs are equivalent,
+      but different fusion configurations might still be optimal
+      as costs and benefits of different fusions may fall out differently.
+    \end{itemize}
+
+    \begin{table}[t]
+      \centering
+      \pgfplotstabletypeset[
+        col sep=comma,
+        columns={name, pre_edges, dropout},
+        %
+        columns/dropout/.style={
+          column name=Dropout,
+          column type=r,
+          preproc/expr={100*##1},
+          postproc cell content/.append style={
+            /pgfplots/table/@cell content/.add={}{\%},
+          },
+          fixed, fixed zerofill, precision=1,
+        },
+        %
+        columns/name/.style      ={column name=Model            , string type, column type=l},
+        columns/pre_edges/.style ={column name=Edges        , int detect, column type=r},
+        %
+        every head row/.style={
+          before row={%
+            \toprule
+          },
+          after row=\midrule,
+        },
+        every last row/.style={after row=\bottomrule},
+      ]{\dataRecpart}
+      \caption{Summary of the models optimized, accompanied by the dropout ratio used}
+      \label{tab:models}
+    \end{table}
+    % TODO: maybe add vertex count to the graph?
+
+    % TODO: fuseall used for all models
+
+    These models were searched with differing dropout ratios
+    as shown in Table~\ref{tab:models},
+    selected for each such that the search would conclude in a reasonable time.
+    All models were searched with the \code{fuse-all-consumers} option enabled.
+
+    All the models used are comparatively small,
+    the largest of which, Diffusion (L), being just under 10 Million parameters,
+    however bigger models failed to fit into the RTX 2080 Ti's memory.
+
+  \subsection{Benchmarking}
+    After the harness returned optimal fusions to force for each model,
+    the ones for which it reported an improvement over the baseline
+    acording to its quality metric were benchmarked against the basleine
+    on an Nvidia RTX 2080 Ti using XLA's \code{run\_hlo\_module} utility,
+    timing 200 runs after 25 warmup runs of both the baseline and the optimized module.
+
+  \subsection{Scaling}
+    To quanitfy how the number of configurations to evaluate scale in terms of
+    the number of edges in the graph,
+    sweeps of the dropout rate were ran for the models\footnote{
+      As the graphs for the three GPT models are identical and the number
+      of evaluated configurations do not depend on the evaluation result,
+      the quality metric,
+      the number of evaluated configurations for a given dropout rate
+      are identical for all three GPT models
+      and as a result, a sweep of one of them applies to all three.
+    },
+    recording both edge count and number of evaluated configurations.
+
+
+
+\section{Results}
+
+  % TODO: check that MNIST is introduced as digit recognition as it "just a name of an institute"
+  % TODO: MNIST gain in metric but loss in actual performance should be discussed more
+  % TODO: highlight inconsistency in MNIST; "is it an improvement or a regression?"
+  % TODO: count outliers maybe?
+  % TODO: stddev
+  % TODO: "Mann-Whitney U"
+  % TODO: "bootstrap confidence interval"
+  % TODO: "The measured differences are small relative to the observed variance in the runtime measurements. With 50 runs per condition, the study is underpowered to detect effects of this magnitude. Furthermore, the effect sizes are small: a 0.33% improvement in mean runtime is unlikely to be practically significant, even if it were statistically detectable."
+  % TODO: "Fisher exact test"
+  % TODO: Be honest about power. "With 50 runs, we have 80% power to detect effects of size X or larger. The observed effect is smaller than X, so we cannot conclude that the optimal configuration improves runtime."
+  % TODO: also discuss this in discussion
+  % TODO: not the right place here, but discuss quality metric as a proxy for performance
+  % TODO: discuss if optimizing is finding real improvement or just overfitting quality metric
+
+  \begin{table*}[t]\label{tab:results}
+    % TODO: Do this ^^^^^^^^^^^^^^^^^ everywhere
+    \centering
+    %\resizebox{\textwidth}{!}{%
+      \pgfplotstabletypeset[
+        col sep=comma,
+        columns={name, dropout, pre_edges, post_edges, evals, b_metric, o_metric, i_metric},
+        %
+        columns/dropout/.style={
+          column name={},
+          column type=r,
+          preproc/expr={100*##1},
+          postproc cell content/.append style={
+            /pgfplots/table/@cell content/.add={}{\%},
+          },
+          fixed, fixed zerofill, precision=1,
+        },
+        columns/i_metric/.style={
+          column name=Impr.,
+          column type=r,
+          preproc/expr={100*##1},
+          fixed, fixed zerofill, precision=3, skip 0.,
+        },
+        postproc cell content/.append code={%
+          \ifnum\pgfplotstablecol=7\relax
+            \if\relax\detokenize{#1}\relax\else
+              \pgfkeys{/pgfplots/table/@cell content/.add={}{\%}}%
+            \fi
+          \fi
+          \if\relax\detokenize{#1}\relax
+            \pgfkeyssetvalue{/pgfplots/table/@cell content}{\textemdash}%
+          \fi
+        },
+        %
+        columns/name/.style      ={column name={}             , string type, column type=l},
+        columns/pre_edges/.style ={column name=Initial        , int detect, column type=r},
+        columns/post_edges/.style={column name=After          , int detect, column type=r},
+        columns/evals/.style     ={column name={}             , int detect, column type=r},
+        columns/b_metric/.style  ={column name=Baseline       , sci, sci zerofill, sci precision=4, column type=r},
+        columns/o_metric/.style  ={column name=Optimal        , sci, sci zerofill, sci precision=4, column type=r},
+        %
+        every head row/.style={
+          before row={%
+            \toprule
+            \multirow{2}{*}{Model} &
+            \multirow{2}{*}{Dropout} &
+            \multicolumn{2}{c}{Edges} &
+            \multirow{2}{*}{\shortstack{Evaluated\\configs}} &
+            \multicolumn{3}{c}{Quality metric} \\
+            \cmidrule(lr){3-4} \cmidrule(lr){6-8}
+          },
+          after row=\midrule,
+        },
+        every last row/.style={after row=\bottomrule},
+      ]{\dataRecpart}
+    %}
+    \caption{Results for each model optimized}
+  \end{table*}
+
+
+  Table~\ref{tab:results} shows the results of both the optimization run on the harness,
+  as well as the measured runtimes for the models that showed an improvement over the
+  baseline using the quality metric.
+  The \emph{Edges} columns show the number of edges in the graph both before and after dropout.
+  The columns under \emph{Quality metric} containt the quality metrics of
+  both the baseline and the optimized module as computed by the harness,
+  showing the relative improvement on the quality metric in cases where
+  and imporvement could be found.
+
+  \begin{table}[t]\label{tab:runtime}
+    \centering
+    %\resizebox{\textwidth}{!}{%
+      \pgfplotstabletypeset[
+        col sep=comma,
+        columns={stat_name,m_baseline,m_optimal,m_impr,d_baseline,d_optimal,d_impr},
+        %
+        columns/m_impr/.style={
+          column name=Impr.,
+          column type=r,
+          preproc/expr={100*(##1-1)},
+          fixed, fixed zerofill, precision=3, skip 0.,
+        },
+        columns/d_impr/.style={
+          column name=Impr.,
+          column type=r,
+          preproc/expr={100*(##1-1)},
+          fixed, fixed zerofill, precision=3, skip 0.,
+        },
+        postproc cell content/.append code={%
+          \ifnum\pgfplotstablecol=3\relax\if\relax\detokenize{#1}\relax\else
+              \pgfkeys{/pgfplots/table/@cell content/.add={}{\%}}%
+          \fi\fi
+          \ifnum\pgfplotstablecol=6\relax\if\relax\detokenize{#1}\relax\else
+              \pgfkeys{/pgfplots/table/@cell content/.add={}{\%}}%
+          \fi\fi
+          \if\relax\detokenize{#1}\relax
+            \pgfkeyssetvalue{/pgfplots/table/@cell content}{--}%
+          \fi
+        },
+        %
+        columns/stat_name/.style={column name={}, string type, column type=l},
+        columns/m_baseline/.style={column name=Basel., fixed, fixed zerofill, precision=4, skip 0., column type=r},
+        columns/m_optimal/.style ={column name=Opt.  , fixed, fixed zerofill, precision=4, skip 0., column type=r},
+        columns/d_baseline/.style={column name=Basel., fixed, fixed zerofill, precision=4, skip 0., column type=r},
+        columns/d_optimal/.style ={column name=Opt.  , fixed, fixed zerofill, precision=4, skip 0., column type=r},
+        %
+        every head row/.style={
+          before row={%
+            \toprule
+             &
+            \multicolumn{3}{c}{MNIST} &
+            \multicolumn{3}{c}{Diffusion (L)} \\
+            \cmidrule(lr){2-4} \cmidrule(lr){5-7}
+          },
+          after row=\midrule,
+        },
+        every last row/.style={after row=\bottomrule},
+      ]{\dataRuntimeSummary}
+    %}
+    \caption{Runtimes of the two models benchmarked}
+  \end{table}
+
+  \begin{figure}[t]\label{fig:runtime}
+    \begin{tikzpicture}
+    \begin{groupplot}[
+      group style={
+        group size=2 by 1,
+        horizontal sep=0,
+      },
+      boxplot/draw direction=y,
+      width=0.5\linewidth, height=0.75\linewidth,
+      xtick={1,2},
+      xticklabels={Baseline, Optimal}
+    ]
+
+      \nextgroupplot[
+        title=MNIST,
+        axis y line*=left
+      ]
+      \addplot+[boxplot, boxplot/draw position=1] table[y=baseline]{\dataRuntimeMnist};
+      \addplot+[boxplot, boxplot/draw position=2] table[y=ours]{\dataRuntimeMnist};
+
+      \nextgroupplot[
+        title=Diffusion (L),
+        axis y line*=right
+      ]
+      \addplot+[boxplot, boxplot/draw position=1] table[y=baseline]{\dataRuntimeDiffusion};
+      \addplot+[boxplot, boxplot/draw position=2] table[y=ours]{\dataRuntimeDiffusion};
+
+    \end{groupplot}
+    \end{tikzpicture}
+
+
+    \caption{
+      The distribution of measured runtimes of both
+      the \emph{MNIST} and \emph{Diffusion (L)} models in seconds.
+    }
+    \Description{
+      A box-and-whisker plot showing measured runtimes of both
+      the \emph{MNIST} and \emph{Diffusion (L)} models in seconds.
+    }
+  \end{figure}
+
+
+  Of the 8 models optimized,
+  improvements on the baseline in terms of quality metric could only be found
+  for two of the 8 models, MNIST and Diffusion (L),
+  whose runtime performance results are shown in
+  Table~\ref{tab:runtime} and Figure~\ref{fig:runtime}.
+  Performance for the Diffusion (L) model shows a regression both in terms
+  of mean and median.
+  For the MNIST model, a regression in terms of mean,
+  but an improvement in terms of median was measured.
+
+  \begin{table}[t]\label{tab:relevance}
+    \centering
+    %\resizebox{\textwidth}{!}{%
+      \pgfplotstabletypeset[
+        col sep=comma,
+        columns={benchmark,p_val,micil,miciu},
+        %
+        columns/miciu/.style={
+          column name=Upper,
+          column type=r,
+          preproc/expr={100*(##1-1)},
+          fixed, fixed zerofill, precision=1, skip 0.,
+          postproc cell content/.append style={
+            /pgfplots/table/@cell content/.add={}{\%},
+          },
+        },
+        columns/micil/.style={
+          column name=Lower,
+          column type=r,
+          preproc/expr={100*(##1-1)},
+          fixed, fixed zerofill, precision=1, skip 0.,
+          postproc cell content/.append style={
+            /pgfplots/table/@cell content/.add={}{\%},
+          },
+        },
+        %
+        columns/benchmark/.style={column name={}, string type, column type=l},
+        columns/p_val/.style={column name={P-Value}, fixed, fixed zerofill, precision=2, skip 0., column type=r},
+        %
+        every head row/.style={
+          before row={%
+            \toprule
+             & &
+            \multicolumn{2}{c}{Median Impr. CI} \\
+            \cmidrule(lr){3-4}
+          },
+          after row=\midrule,
+        },
+        every last row/.style={after row=\bottomrule},
+      ]{\dataRuntimeRelevance}
+    %}
+    \caption{P-Value and 95\% Confidence Interval of Median Improvement}
+  \end{table}
+
+  Table~\ref{tab:relevance} shows computed P-values
+  (Mann-Whitney U) and the 95\% confidence interval of the improvement in terms of median,
+  showing that the P-values for both the MNIST and Diffusion (L) benchmarks are above 0.05.
+  Both confidence invervals include 0\%.
+
+  \begin{figure*}[t]\label{fig:scaling}
+    \newcommand{\scalingplot}[4]{%
+      \begin{subfigure}[b]{#4}
+        \centering
+        \begin{tikzpicture}
+        \begin{axis}[
+          width=\linewidth,
+          ymode=log,
+          log basis y=2,
+          xmin=1,
+          ymin=1,
+          grid=both,
+        ]
+          \addplot[only marks, mark size=1px] table[x=edges, y=evals                                   ]{#3};
+          \addplot[no markers               ] table[x=edges, y={create col/linear regression={y=evals}}]{#3};
+        \end{axis}
+        \end{tikzpicture}
+        %
+        \pgfmathparse{2^\pgfplotstableregressiona}
+        \xdef\regressionbase{\pgfmathresult}
+        \pgfmathparse{2^\pgfplotstableregressionb}
+        \xdef\regressionconstant{\pgfmathresult}
+        %
+        \caption{%
+          \centering
+          #1 \\
+          Regression parameters $cb^x$:\\
+          ($c=\regressionconstant$\;$b=\regressionbase$)%
+        }
+        \label{#2}
+      \end{subfigure}%
+    }
+    \scalingplot{MNIST        }{fig:scaling:mnist          }{\dataScalingMnist         }{0.32\linewidth}
+    \scalingplot{UNet         }{fig:scaling:unet           }{\dataScalingUnet          }{0.32\linewidth}
+    \scalingplot{Cifar10      }{fig:scaling:cifar          }{\dataScalingCifar         }{0.32\linewidth}
+    \scalingplot{Diffusion (S)}{fig:scaling:diffusion-small}{\dataScalingDiffusion     }{0.32\linewidth}
+    \scalingplot{Diffusion (L)}{fig:scaling:diffusion-large}{\dataScalingDiffusionLarge}{0.32\linewidth}
+    \scalingplot{GPT (All)    }{fig:scaling:gpt            }{\dataScalingGpt           }{0.32\linewidth}
+
+    \caption{
+      Plotting edges after dropout against evaluated configs on a log-linear plot with a linear regression fitted for each model
+    }
+    \Description{\lorem}
+  \end{figure*}
+
+  Figure~\ref{fig:scaling} plots the six sweeps ran on the models on a log-linear plot,
+  each accompanied by a linear regression finding parameters $c$ and $b$
+  of the exponential function $cb^x$ where $x$ is the number of edges.
+  The bases $b$ are in the range from $1.2$ to $1.6$.
+
+
+
+% TODO: In correct section, how was dropout picked
+% TODO: Add notes of insufficiencies, noting what will be done for a later draft
+
+% TODO: If cost metric quality is an important point of discussion, I should elaborate on how that is produced
+% TODO: Results tables have been split. Text referencing them must be untangled
+
+
+% TODO: figure out: is it "my xy" or "our xy"?
+
+\section{Discussion}\label{sect:discussion}
+
+
+  This section discusses the above findings,
+  considering implications on the quality metric,
+  how large the search space remains,
+  and how it appears to scale \wrt\ edge count.
+
+
+  \subsection{Inaccurate quality metric}
+    While the search \emph{did} report an improvement for two benchmarks,
+    the modeled performance improvements failed to materialize when comparing actual runtime performance.
+    Seeing as the P-values of .78 and .12 are both considerably above .05,
+    the differences in runtime performance between the baseline and optimized
+    models is not statistically significant.
+    This points to an inaccuracy of the quality metric used,
+    as the modeled improvement in runtime could not be observed in practice,
+    making the quality metric used a bad proxy for runtime performance.
+
+
+  \subsection{Search Space is still too Large}
+    While \recpart\ did reduce the search space,
+    it did not yield as big of a gain as \citet{recpart-paper}.
+    Even with the additional search space reduction of not considering parital fusions, % TODO: Yep, absolutely needs introduction
+    a high dropout ratio had to be used to results in feasible time.
+    It appears that the search space remains infeasible due to the following factors reinforcing one another:
+    \begin{itemize}
+      \nitem{Large graphs}
+      % TODO: "classical programing" is shakey
+      As compared to classical programing where functions consist of multiple instructions,
+      expressing computations as computation graphs tends to need many more operators
+      connected together as compared to functions calling each other in classical programming,
+      because functions tend to express a lot more complex logic as they already are a composition
+      of multiple fundamental instructions.
+      % TODO: XLA spams operators maybe?
+
+      \nitem{Search space still grows exponentially}
+      As most log-linear plots from Figure~\ref{fig:scaling} appear linear,
+      the search space seems to still grow exponentially \wrt\ the number of edges in the graph,
+      and unfortunately,
+      looking at the regressed bases $b$, while below two,
+      are still large enough,
+      that the size of the search space explodes,
+      even for relatively small graphs.
+      % TODO: bring up that concrete speedup recpart gives you is dependent on graph topology
+    \end{itemize}
+
+
+  \subsection{Scaling}
+
+    Looking at the plots in Figure~\ref{fig:scaling},
+    some patterns become evident.
+
+    Either horizontal or vertical jumps can be observed in most of the models.
+    Horizontal jumps can be explained by how the dropout mechanims reduces the graph.
+    As explained in Section~\ref{sect:dropout},
+    dropout sorts the edges topologically,
+    removes edges from both ends of the sorted edge list,
+    and picks the biggest connected component of the remaining graph.
+    This has as effect that there can be a second, smaller,
+    connected component that is pruned by the drop out logic.
+    If a reduced dropout rate now reveals a bridge between two connected components,
+    the two previously disconnected connected components merge into one,
+    instantly increasing the edge count of the searched graph by both the
+    bridge connecting them and the entirity of the smaller connected component
+    which was previously pruned.
+    Considering, however, the edge connecting the newly connected components is a bridge,
+    \recpart\ likely picks that bridge as its first edge,
+    instantly reducing the search space again,
+    explaining why horizontal do not seem to also jump vertically.
+
+    Vertical jumps may be explained by quirks in the edge selection heuristic
+    rather than graph structure,
+    as vertical jumps seem to curve away from the jump,
+    sometimes both before and after the jump.
+    Figure~\ref{fig:scaling:unet} for example shows,
+    that the vertical jump above 30 edges is immediatly followed by a
+    \emph{course correction} back to the regressed line.
+    Similarly, Figure~\ref{fig:scaling:cifar} exhibits a dip just before the vertical jump,
+    leading to the vertical jump \emph{itself} being the course correction back
+    to the regressed line.
+    The jump just below 50 edges in Figure~\ref{fig:scaling:mnist}
+    exhibits both the dip before the vertical jump,
+    aswell as the course correction back down after the jump.
+
+  %\subsection{XLA already performs well}
+  %  How few of the optimized models reported a quality metric gain
+  %  and how marginal that gain was in practice, even regressing in one scenario,
+  %  could be explained by the maturity of XLA and how constrained beneficial fusions are.
+  %  % TODO: Again, we NEED this in the background, it has become SO IMPORTANT and i've referenced it SO MUCH
+  %  As both failure modes and beneficial scenarios of operator fusion can be grouped into
+  %  a small handful of well understood patterns, % TODO: SUUUUPER unfounded bs this NEEDS to be either scrapped, rewritten, %or properly introduced somewhere (hint, hint: in the background as many other todos already say)
+  %  it is easy to write specific passes for those patterns,
+  %  trivializing the problem of finding optimal fusions,
+  %  thus explaining the rarity and marginality % << Is this a word?
+  %  of more optimal fusions.
+  %  % TODO: rewrite the WHOLE subsection i'm just spewing grabage atp
+  %  % TODO: note the marginality on both metric _and_ actual runtime
+
+
+% TODO: verify _allllllll_ sources
+% TODO: deal with the exhaustive fusion paper found before the thesis statement
+
+\section{Limitations}\label{sect:limitations}
+  
+  % TODO: in the right place insert ramifications / limitations of using cost metric as proxy for performance
+
+  While not invalidating findings about search space size,
+  the high dropout ratios have ramifications on findings in the following ways:
+  \begin{itemize}
+    \item
+    As dropout prunes edges, it naturally has an impact on graph topology which,
+    as previously discussed, % TODO: actually discuss this "previously"
+    can change how aggressively \recpart\ reduces the search space.
+    As a result, extrapolating the scaling statistics to scenarios
+    without dropout is not possible
+
+    \item
+    Since dropout reduces the graph visible to \recpart,
+    it may hide potential regions which \emph{could} be optimized and which
+    \emph{can} improve on the baseline,
+    so claims about the lack of of improvements cannot be made.
+  \end{itemize}
+
+  % TODO: Maybe a paragraph about that there are _multiple_ fusion strategies to choose for each fusion
+  %       which was not explored?
+
+  Similarly,
+  the decision to only optimize using the reduced search space of not considering partial fusions % TODO: guess who's back
+  may hide potential more optimal solutions, again, invalidating claims about lack of improvement. % TODO: ditto
+  % TODO: maybe add something about edge selection in fuseall mode
+  % TODO: maybe say something about the limited number of models benchmarked
+
+
+\section{Related work}
+
+  This section categorizes related work into:
+  (1) differing strategies for finding fusions,
+  (2) approaches for reducing search spaces for compiler optimizations,
+  and (3) how exhaustive searches are enabled for other domains.
+
+  \partitle{Operator Fusion Strategies in Compilers}
+  Operator Fusion is established as a crucial optimization for computation graph compilers
+  \cite{survey2020},
+  seeing different strategies in use,
+  such as rule-based approaches that apply a fixed set of transformations whenever their
+  preconditions match\cite{chen2018tvm, xla2023},
+  pattern-matching approaches finding common specific patterns of
+  well-known operator pairs and replacing them with equivalent operators
+  \cite{tensorrt},
+  exposing scheduling decisions to the user\cite{ragan2013halide},
+  to more modern approaches specialized to fill specific gaps of the previously mentioned
+  approaches\cite{niu2021dnnfusion, zhao2022apollo, chimera2023, zhao2026neptune}.
+  These strategies iteratively address specific failure modes of existing solutions,
+  but none attempt to find the globally optimal fusion configuration.
+  They are designed to be fast and predictable rather than exhaustive.
+  This gap motivates our investigation.
+
+  \partitle{Search Space Reduction for Compiler Optimizations}
+  Several efforts exist that try to reduce the search space to feasible sizes via heuristic methods,
+  such as using machine learning models\cite{ashouri2018survey, cui2025decos} and
+  pruning candidates by collapsing multiple into groups\cite{phothilimthana2016lens}.
+  While these efforts find good solutions fast, they do so by pruning unlikely candidates,
+  making them non-exhaustive and incapable of finding the global optmimum with certainty.
+
+  \partitle{Exhaustive search and \recpart} % TODO: find better title
+  Exhaustive search guarantees optimality, but only under conditions that keep the search space bounded.
+  \citet{recpart-paper} exhaustively search optimal inlining decisions by
+  exploiting call graph connectivity to reduce the space from $2^{349}$ to $2^{25}$.
+  HieraSynth\cite{lu2025hierasynth} achieves completeness in super-optimization by
+  hierarchically partitioning candidate programs and pruning unrealizable branches,
+  making exhaustive search feasible for instruction sets up to 700 instructions.
+  Bik\cite{bik2021exhaustive} decouples search time from compile time by performing
+  exhaustive state space search during compiler development.
+  These approaches share a common pattern: exhaustiveness is bought by restricting the problem
+  to a bounded graph structure,
+  a fixed cost model,
+  or an offline search.
+  Whether these conditions hold for operator fusion is the question our work investigates.
+
+\section{Future work}
+
+  %\lorem
+
+  \partitle{Investigate search space scaling}
+  Our results show that the search space scales a lot worse when compared to \citet{recpart-paper}.
+  Future work could investigate what makes computation graphs scale worse than call graphs
+  by observing \emph{how} \recpart\ carves up the graph and how topologies found in
+  computation graphs affect its ability to reduce the search space
+
+  \partitle{Non-partial fusion specific edges selection}
+  Our edge-selection heuristic was intended to find good edges when only considering the
+  fusion of that specific edges.
+  Future work could attempt to find an edge-selection heuristic better suited for
+  searching with the \code{fuse-all-consumers} option enabled,
+  by considering that fusing or not fusing a given edge also applies that decision to
+  all outgoing edges of the producer.
+
+  \partitle{More representative metric}
+  We observed, that using a model as a search metric can produce non-represetative search results.
+  Using a more direct metric, such as benchmarked runtime, could be used to find improvements
+  that a model does not model.
+
+  \partitle{Additional reduction in search spce}
+  We adapted a search space reduction strategy from call graphs which can contain cycles.
+  As computation graphs cannot contain cycles,
+  future work could find a way to exploit this for an additional reduction in search space.
+
+\section{Conclusion}
+  
+  We applied \recpart\ to operator fusion in XLA with the goal of exhaustively finding
+  optimal fusion configurations.
+  We discovered, that the search space reduction provided by \recpart\ is not sufficient,
+  even after additional search space reductions,
+  to exhaustively search optimal fusion configurations,
+  finding no statistically significant improvements heavily pruned computation graphs
+  due to inaccuracies of the cost metric.
+
+  As a result we conclude that \recpart\ alone is not sufficient for operator fusion
+  on realistic computation graphs.
+  The method's feasibility for inlining depends on a static and accurate cost metric
+  and a call graph structure that partitiones well.
+  Neither is true for computation graphs,
+  where runtime performance statically can only be estimated
+  and search spaces still grow exponentially after application of \recpart.
 
 %%
 %% The acknowledgments section is defined using the "acks" environment
 %% (and NOT an unnumbered section). This ensures the proper
 %% identification of the section in the article metadata, and the
 %% consistent spelling of the heading.
-\begin{acks}
-To Robert, for the bagels and explaining CMYK and color spaces.
-\end{acks}
+%\begin{acks}
+%  To Robert, for the bagels and explaining CMYK and color spaces.
+%\end{acks}
 
 %%
 %% The next two lines define the bibliography style to be used, and
@@ -636,35 +1601,41 @@ To Robert, for the bagels and explaining CMYK and color spaces.
 %% If your work has an appendix, this is the place to put it.
 \appendix
 
-\section{Research Methods}
+%\section{Runtime data of the individual runs}\label{sect:raw-runtime}
+%  \pgfplotstabletypeset[
+%    col sep=comma,
+%    create on use/mnist_base/.style={copy column from table={\dataRuntimeMnist}{baseline}},
+%    create on use/mnist_ours/.style={copy column from table={\dataRuntimeMnist}{ours}},
+%    create on use/diff_base/.style={copy column from table={\dataRuntimeDiffusion}{baseline}},
+%    create on use/diff_ours/.style={copy column from table={\dataRuntimeDiffusion}{ours}},
+%    columns={mnist_base, mnist_ours, diff_base, diff_ours},
+%    % Column types and formatting
+%    columns/mnist_base/.style={column name={Baseline}, skip 0., fixed, fixed zerofill, precision=6, column type=r},
+%    columns/mnist_ours/.style={column name={Ours    }, skip 0., fixed, fixed zerofill, precision=6, column type=r},
+%    columns/diff_base/.style ={column name={Baseline}, skip 0., fixed, fixed zerofill, precision=6, column type=r},
+%    columns/diff_ours/.style ={column name={Ours    }, skip 0., fixed, fixed zerofill, precision=6, column type=r},
+%    % Inject the two-row grouped header
+%    every head row/.style={
+%        before row={%
+%            \toprule
+%            \multicolumn{2}{c}{MNIST} &
+%            \multicolumn{2}{c}{Diffusion} \\
+%            \cmidrule(lr){1-2} \cmidrule(lr){3-4}
+%        },
+%        after row=\midrule,
+%    },
+%    every last row/.style={after row=\bottomrule},
+%  ]{\dataRuntimeMnist}
 
-\subsection{Part One}
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi
-malesuada, quam in pulvinar varius, metus nunc fermentum urna, id
-sollicitudin purus odio sit amet enim. Aliquam ullamcorper eu ipsum
-vel mollis. Curabitur quis dictum nisl. Phasellus vel semper risus, et
-lacinia dolor. Integer ultricies commodo sem nec semper.
-
-\subsection{Part Two}
-
-Etiam commodo feugiat nisl pulvinar pellentesque. Etiam auctor sodales
-ligula, non varius nibh pulvinar semper. Suspendisse nec lectus non
-ipsum convallis congue hendrerit vitae sapien. Donec at laoreet
-eros. Vivamus non purus placerat, scelerisque diam eu, cursus
-ante. Etiam aliquam tortor auctor efficitur mattis.
-
-\section{Online Resources}
-
-Nam id fermentum dui. Suspendisse sagittis tortor a nulla mollis, in
-pulvinar ex pretium. Sed interdum orci quis metus euismod, et sagittis
-enim maximus. Vestibulum gravida massa ut felis suscipit
-congue. Quisque mattis elit a risus ultrices commodo venenatis eget
-dui. Etiam sagittis eleifend elementum.
-
-Nam interdum magna at lectus dignissim, ac dignissim lorem
-rhoncus. Maecenas eu arcu ac neque placerat aliquam. Nunc pulvinar
-massa et mattis lacinia.
+%\section{Research Methods}
+%  \subsection{Part One}
+%    \lorem
+%
+%  \subsection{Part Two}
+%    \lorem
+%
+%  \section{Online Resources}
+%    \lorem
 
 \end{document}
 \endinput

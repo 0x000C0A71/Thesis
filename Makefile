@@ -11,11 +11,13 @@ BIBFILE = bib.bib
 
 all: $(NAME).pdf
 
-# 1st pdflatex: produces .aux with citation keys
-# bibtex: resolves citations -> .bbl
-# 2nd pdflatex: inserts bibliography, resolves refs
-# 3rd pdflatex: stabilizes page numbers / cross-references
-$(NAME).pdf: $(TEXFILE) $(BIBFILE)
+data/summary.csv:
+	$(MAKE) -C data summary
+
+data/summary-runtime.csv:
+	$(MAKE) -C data summary
+
+$(NAME).pdf: $(TEXFILE) $(BIBFILE) data/summary.csv
 	@$(LATEX) $(LATEXFLAGS) $(TEXFILE)
 	@$(BIBTEX) $(NAME)
 	@$(LATEX) $(LATEXFLAGS) $(TEXFILE)
