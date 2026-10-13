@@ -17,7 +17,7 @@ data/summary.csv:
 data/runtimes.csv:
 	$(MAKE) -C data runtimes
 
-$(NAME).pdf: $(TEXFILE) $(BIBFILE) data/summary.csv
+$(NAME).pdf: $(TEXFILE) $(BIBFILE) data/summary.csv data/runtimes.csv
 	@$(LATEX) $(LATEXFLAGS) $(TEXFILE)
 	@$(BIBTEX) $(NAME)
 	@$(LATEX) $(LATEXFLAGS) $(TEXFILE)
