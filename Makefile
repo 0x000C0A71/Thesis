@@ -14,8 +14,8 @@ all: $(NAME).pdf
 data/summary.csv:
 	$(MAKE) -C data summary
 
-data/summary-runtime.csv:
-	$(MAKE) -C data summary
+data/runtimes.csv:
+	$(MAKE) -C data runtimes
 
 $(NAME).pdf: $(TEXFILE) $(BIBFILE) data/summary.csv
 	@$(LATEX) $(LATEXFLAGS) $(TEXFILE)

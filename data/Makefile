@@ -2,8 +2,11 @@
 .PHONY: summary clean
 
 
-summary: collect_data.sh mnist/index cifar10/index unet/index diffusion/index diffusion-large/index gpt-small/index gpt/index gpt-large/index
+summary: collect_data.sh
 	./collect_data.sh
+
+runtimes: collect_runtimes.py
+	./collect_runtimes.py
 
 clean:
 	rm -f summary.csv
