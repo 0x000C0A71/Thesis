@@ -45,7 +45,7 @@
 %%
 %%
 %\documentclass[acmsmall]{acmart}
-\documentclass[sigconf]{acmart}
+\documentclass[sigconf,nonacm]{acmart}
 %\documentclass{article}
 %%
 %% \BibTeX command to typeset BibTeX logo in the docs
@@ -87,7 +87,7 @@
 %\usepackage{siunitx}
 \usepackage{pgfplotstable}
 
-\newcommand{\recpart}{the Recrusive Partitioning method}
+\newcommand{\recpart}{the Recursive Partitioning method}
 \newcommand{\partitle}[1]{\textbf{#1:}\ }
 
 \newcommand{\nitem}[1]{\item\partitle{#1}}
@@ -374,7 +374,7 @@
     This section explains computation graphs and operator fusion
     and the necessary terminology.
 
-    \begin{figure}[t]
+    \begin{figure}[t]%fig:compgraph
       \begin{subfigure}[b]{0.45\linewidth}
         \centering
         \begin{tikzpicture}
@@ -497,8 +497,8 @@
     \end{itemize}
 
 
-    \begin{figure}[t]\label{fig:fusing}
-      \begin{subfigure}[b]{0.45\linewidth}\label{fig:fusing:orig}
+    \begin{figure}[t]%fig:fusing
+      \begin{subfigure}[b]{0.45\linewidth}
         \centering
         \begin{tikzpicture}
         \begin{scope}
@@ -517,11 +517,12 @@
         \end{scope}
         \end{tikzpicture}
         \caption{Original}
+        \label{fig:fusing:orig}
       \end{subfigure}
       %
       \hfill
       %
-      \begin{subfigure}[b]{0.45\linewidth}\label{fig:fusing:fused}
+      \begin{subfigure}[b]{0.45\linewidth}
         \centering
         \begin{tikzpicture}
         \begin{scope}
@@ -540,9 +541,11 @@
         \end{scope}
         \end{tikzpicture}
         \caption{Fused}
+        \label{fig:fusing:fused}
       \end{subfigure}
 
       \caption{Example: Showing the effect of fusing the edge \edge{B}{C}. The edge \edge{A}{B} is duplicated as the new edge \edge{A}{C'}. The newly fused $C'$ operator no longer depends on $B$, but it has inherited all dependencies of $B$, in this case $A$.}
+      \label{fig:fusing}
       \Description{Two computation graphs side by side. The left shows the original graph, the right shows the graph after fusing the nodes B and C into BC}
     \end{figure}
 
@@ -635,7 +638,9 @@
       extend the analysis scope of the compiler.
     \end{itemize}
 
-    \begin{table*}[t]\label{tab:correspondence}
+    \begin{table*}[t]%tab:correspondence
+      \caption{Showing correspondence of elements}
+      \label{tab:correspondence}
       \begin{tabular}{ccc}
         \toprule
         Call graphs \& function inlining & Computation graphs \& operator fusion & Graph element or operation \\
@@ -647,7 +652,6 @@
         $B$ is inlined into $A$       & $A$ is fused into $B$                       & \edge{A}{B} merges                               \\
         \bottomrule
       \end{tabular}
-      \caption{Showing correspondence of elements}
     \end{table*}
 
     Function inlining operates on the program's \emph{call graph},
@@ -990,7 +994,9 @@
       as costs and benefits of different fusions may fall out differently.
     \end{itemize}
 
-    \begin{table}[t]
+    \begin{table}[t]%tab:models
+      \caption{Summary of the models optimized, accompanied by the dropout ratio used}
+      \label{tab:models}
       \centering
       \pgfplotstabletypeset[
         col sep=comma,
@@ -1017,8 +1023,6 @@
         },
         every last row/.style={after row=\bottomrule},
       ]{\dataRecpart}
-      \caption{Summary of the models optimized, accompanied by the dropout ratio used}
-      \label{tab:models}
     \end{table}
     % TODO: maybe add vertex count to the graph?
 
@@ -1071,8 +1075,9 @@
   % TODO: not the right place here, but discuss quality metric as a proxy for performance
   % TODO: discuss if optimizing is finding real improvement or just overfitting quality metric
 
-  \begin{table*}[t]\label{tab:results}
-    % TODO: Do this ^^^^^^^^^^^^^^^^^ everywhere
+  \begin{table*}[t]%tab:results
+    \caption{Results for each model optimized}
+    \label{tab:results}
     \centering
     %\resizebox{\textwidth}{!}{%
       \pgfplotstabletypeset[
@@ -1127,7 +1132,6 @@
         every last row/.style={after row=\bottomrule},
       ]{\dataRecpart}
     %}
-    \caption{Results for each model optimized}
   \end{table*}
 
 
@@ -1140,7 +1144,9 @@
   showing the relative improvement on the quality metric in cases where
   and imporvement could be found.
 
-  \begin{table}[t]\label{tab:runtime}
+  \begin{table}[t]%tab:runtime
+    \caption{Runtimes of the two models benchmarked}
+    \label{tab:runtime}
     \centering
     %\resizebox{\textwidth}{!}{%
       \pgfplotstabletypeset[
@@ -1190,10 +1196,9 @@
         every last row/.style={after row=\bottomrule},
       ]{\dataRuntimeSummary}
     %}
-    \caption{Runtimes of the two models benchmarked}
   \end{table}
 
-  \begin{figure}[t]\label{fig:runtime}
+  \begin{figure}[t]%fig:runtime
     \begin{tikzpicture}
     \begin{groupplot}[
       group style={
@@ -1228,6 +1233,7 @@
       The distribution of measured runtimes of both
       the \emph{MNIST} and \emph{Diffusion (L)} models in seconds.
     }
+    \label{fig:runtime}
     \Description{
       A box-and-whisker plot showing measured runtimes of both
       the \emph{MNIST} and \emph{Diffusion (L)} models in seconds.
@@ -1245,7 +1251,9 @@
   For the MNIST model, a regression in terms of mean,
   but an improvement in terms of median was measured.
 
-  \begin{table}[t]\label{tab:relevance}
+  \begin{table}[t]%tab:relevance
+    \caption{P-Value and 95\% Confidence Interval of Median Improvement}
+    \label{tab:relevance}
     \centering
     %\resizebox{\textwidth}{!}{%
       \pgfplotstabletypeset[
@@ -1286,7 +1294,6 @@
         every last row/.style={after row=\bottomrule},
       ]{\dataRuntimeRelevance}
     %}
-    \caption{P-Value and 95\% Confidence Interval of Median Improvement}
   \end{table}
 
   Table~\ref{tab:relevance} shows computed P-values
@@ -1294,7 +1301,7 @@
   showing that the P-values for both the MNIST and Diffusion (L) benchmarks are above 0.05.
   Both confidence invervals include 0\%.
 
-  \begin{figure*}[t]\label{fig:scaling}
+  \begin{figure*}[t]%fig:scaling
     \newcommand{\scalingplot}[4]{%
       \begin{subfigure}[b]{#4}
         \centering
@@ -1336,6 +1343,7 @@
     \caption{
       Plotting edges after dropout against evaluated configs on a log-linear plot with a linear regression fitted for each model
     }
+    \label{fig:scaling}
     \Description{\lorem}
   \end{figure*}
 
