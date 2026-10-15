@@ -236,4 +236,24 @@ keywords = {Program Synthesis, Super-Optimization, Component-Based Synthesis, SM
       url={https://arxiv.org/abs/2107.00564}, 
 }
 
+% https://dl.acm.org/doi/10.1145/3520142
+@article{cai2022optimus,
+author = {Cai, Xuyi and Wang, Ying and Zhang, Lei},
+title = {Optimus: An Operator Fusion Framework for Deep Neural Networks},
+year = {2022},
+issue_date = {January 2023},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {22},
+number = {1},
+issn = {1539-9087},
+url = {https://doi.org/10.1145/3520142},
+doi = {10.1145/3520142},
+abstract = {The reduction of neural parameters and operations for the applications on embedded and IoT platforms in current deep neural network (DNN) architectures has received increasing attention. Relatively, the intermediate feature maps of such lightweight neural networks begin to grow and usually outsize the on-chip memory as the new bottleneck, which introduces considerable power-consuming off-chip memory accesses. To reduce the feature-induced memory accesses, operator fusion has been proposed to parallelize the execution of multiple convolutional layers and shown significant reduction of off-chip memory accesses. However, how to fuse the neural operators is still a challenging issue that heavily depends on both the neural network (NN) topology and the specific DNN accelerator configuration. In this work, we observed prior operator fusion approaches fail to guarantee memory-level optimality as they search in the constrained operator fusion design space. Considering the complexity of the NN topologies and the constrained resources of the DNN accelerators, we develop a novel operator fusion framework, Optimus. Optimus includes an accurate memory cost model dedicated to the scheduler to evaluate the potential operator-fusion schemes and a directed acyclic graph-based operator fusion algorithm for both off-line and on-line workload deployment scenarios, which altogether generates high-efficiency operator-fusion solutions for arbitrary network models running on DNN accelerators. The experimental results show that Optimus reduces 17–75\% off-chip memory accesses and obtains 1.86{\texttimes}–3.66{\texttimes} energy efficiency on state-of-the-art DNN workloads when compared to the baselines and brings significant power-efficiency boost to the DNN accelerators of different architectures and dataflows.},
+journal = {ACM Trans. Embed. Comput. Syst.},
+month = oct,
+articleno = {1},
+numpages = {26},
+keywords = {Neural network, embedded processor, memory, layer fusion}
+}
 

@@ -11,24 +11,25 @@ function dump_one() {
 	exp=$(       grep -oP "bits to search \(2\^x\): \K.+"       $1/index) || exit 7
 	b_metric=$(  grep -oP "quality baseline: \K.+"              $1/index) || exit 8
 	o_metric=$(  grep -oP "quality ours: \K.+"                  $1/index) || exit 9
+	r_eval=$(    grep -oP "eval rate: \K.+"                     $1/index) || exit 10
 
 	local i_metric=""
 
 	case "${improve}" in
 		True)
-			i_metric=$(awk -v b="${b_metric}" -v o="${o_metric}" 'BEGIN { printf "%.17g\n", o/b-1 }') || exit 10
+			i_metric=$(awk -v b="${b_metric}" -v o="${o_metric}" 'BEGIN { printf "%.17g\n", o/b-1 }') || exit 11
 			;;
 		False)
 			;;
 		*)
-			exit 14
+			exit 12
 	esac
 
-	echo "${2},${dropout},${pre_edges},${post_edges},${evals},${base},${exp},${b_metric},${o_metric},${i_metric}"
+	echo "${2},${dropout},${pre_edges},${post_edges},${evals},${base},${exp},${b_metric},${o_metric},${i_metric},${r_eval}"
 }
 
 dump_all() {
-	echo "name,dropout,pre_edges,post_edges,evals,base,exp,b_metric,o_metric,i_metric"
+	echo "name,dropout,pre_edges,post_edges,evals,base,exp,b_metric,o_metric,i_metric,r_eval"
 	dump_one mnist           "MNIST"
 	dump_one unet            "UNet"
 	dump_one cifar10         "Cifar10"
