@@ -209,15 +209,15 @@
   \country{Switzerland}}
 \email{marcme@student.ethz.ch}
 
-\author{Michel Weber}
-\authornote{Supervised by.}
-\email{michel.weber@inf.ethz.ch}
-\author{Zhendong Su}
-\authornotemark[1]
-\affiliation{%
-  \institution{ETH Zurich}
-  \country{Switzerland}}
-\email{zhendong.su@inf.ethz.ch}
+%\author{Michel Weber}
+%\authornote{Supervised by.}
+%\email{michel.weber@inf.ethz.ch}
+%\author{Zhendong Su}
+%\authornotemark[1]
+%\affiliation{%
+%  \institution{ETH Zurich}
+%  \country{Switzerland}}
+%\email{zhendong.su@inf.ethz.ch}
 
 
 
@@ -315,6 +315,28 @@
 %\received{20 February 2007}
 %\received[revised]{12 March 2009}
 %\received[accepted]{5 June 2009}
+
+
+\begin{titlepage}
+  \thispagestyle{empty}
+  \centering
+  \vspace*{1.5cm}
+  {\scshape\large Bachelor's Thesis\par}
+  \vspace{1.2cm}
+  {\LARGE\bfseries Is Recursively Partitioned Search Space Enough for
+   Operator Fusion?\par}
+  \vspace{2.2cm}
+  {\large Marc Meier\par}
+  \vspace{0.35cm}
+  {\large ETH Zurich, Switzerland\par}
+  \vspace{1.8cm}
+  {\itshape Supervised by\par}
+  \vspace{0.35cm}
+  {\large Michel Weber\par}
+  {\large Prof.\ Dr.\ Zhendong Su\par}
+  \vfill
+  {\large \today\par}
+\end{titlepage}
 
 %%
 %% This command processes the author and affiliation and title
@@ -978,7 +1000,7 @@
       the size of the search space searched with dropout is a lower bound
       for the size of the full search space,
       as every configuration in the set of searched fusion configurations with dropout
-      maps to at least one configuration in the set of searched fusion configurations without dropout.
+      maps to at least one distinct configuration in the set of searched fusion configurations without dropout.
     \end{itemize}
 
     The searches were run on an AMD Ryzen Threadripper 3990X with up to 32 threads in parallel.
@@ -1622,6 +1644,12 @@
 %%
 %% If your work has an appendix, this is the place to put it.
 \appendix
+
+\section{Repositories}
+  The XLA fork is found at https://github.com/0x000C0A71/xla,
+  the harness source code at https://github.com/0x000C0A71/RecursivePartitioning,
+  the scripts generating the models at https://github.com/0x000C0A71/ThesisModels,
+  and the thesis sources including the raw results at https://github.com/0x000C0A71/Thesis
 
 %\section{Runtime data of the individual runs}\label{sect:raw-runtime}
 %  \pgfplotstabletypeset[
