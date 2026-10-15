@@ -343,7 +343,7 @@
   However heuristics do not know the global optimum,
   as they are not exhaustive.
   A method exists for doing exhaustive search in a related problem (function inlining),
-  but it has not been applied to operator fusion.
+  but that method has not been applied to operator fusion.
 
   We applied that method, \recpart, to operator fusion.
   We introduced additional search space reductions,
@@ -1518,7 +1518,7 @@
   to more modern approaches specialized to fill specific gaps of the previously mentioned
   approaches\cite{niu2021dnnfusion, zhao2022apollo, chimera2023, zhao2026neptune}.
   These strategies iteratively address specific failure modes of existing solutions,
-  but none attempt to find the globally optimal fusion configuration.
+  but none of these attempt to find the globally optimal fusion configuration.
   They are designed to be fast and predictable rather than exhaustive.
   This gap motivates our investigation.
 
@@ -1543,7 +1543,9 @@
   These approaches share a common pattern: exhaustiveness is bought by restricting the problem
   to a bounded graph structure,
   a fixed cost model, or an offline search.
-  Whether these conditions hold for operator fusion is the question our work investigates.
+  Whether they hold for general computation graphs under a runtime-based objective,
+  rather than only for restricted graph structures and static cost models,
+  is the question our work investigates.
   
 
 \section{Future work}
