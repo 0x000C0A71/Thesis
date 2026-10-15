@@ -254,10 +254,10 @@
   
   Operator fusion is a crucial optimization for computation graph compilers,
   as it optimizes kernel dispatches and memory operations to reduce
-  the memory preassure of computation graph evaluators.
+  the memory pressure of computation graph evaluators.
   Finding good operator fusions is an optimization problem with an exponential search space,
   which is usually solved via heuristics,
-  which cannot, however, find the global optmium due to their lack of exhaustiveness.
+  which cannot, however, guarantee finding the global optimum due to their lack of exhaustiveness.
   We implemented a technique from the related problem of function inlining,
   designed to allow for exhaustive search for the global optimum by exploiting
   graph connectedness to reduce the search space.
@@ -327,7 +327,7 @@
   performing a minor transformation on it,
   and storing it back to memory,
   it fuses them into a few kernels loading data once and
-  doing many operaters' computations on said data.
+  doing many operators' computations on said data.
   
   Determining \emph{which} operators to fuse, however,
   is not trivial,
@@ -432,7 +432,7 @@
       \end{subfigure}
 
 
-      \caption{Example: Showing how expressions can be represented as a computation graphs.
+      \caption{Example: Showing how expressions can be represented as a computation graph.
       The marked node is the so-called \emph{root node} of the computation and represents the final output.}
       \label{fig:compgraph}
       \Description{Two computation graphs side by side, showing how expressions can be represented as computation graphs. The left represents $2A+AB$, the right represents $A^\top B$.}
@@ -451,9 +451,9 @@
     tooling often evaluates such computation graphs on GPUs,
     by dispatching a compute kernel for every operator in the graph,
     passing it memory buffers storing their inputs,
-    and memory buffers for them to store their outputs\ncite.
+    and memory buffers for them to store their outputs\cite{nvidiacudaguide}.
     This approach, however, results in each operator of the
-    evaluated computation graph costing\ncite
+    evaluated computation graph costing\cite{xla2023,survey2020}
     \begin{itemize}
       \item A memory read for the inputs
       \item A memory write for the result
@@ -461,7 +461,7 @@
     \end{itemize}
 
     For many of the cheaper operators, these costs \emph{greatly} overshadow
-    the actual compute cost of the operator\ncite.
+    the actual compute cost of the operator\cite{zhao2022apollo,tensorrt}.
     To address this, computation graph compilers employ an optimization called \emph{operator fusion},
     which fuses an operator \emph{producing} a value (the so-called \emph{producer})
     into an operator \emph{consuming} that value (the so-called \emph{consumer}),
@@ -564,7 +564,7 @@
     after the partial fusion illustrate how a partial fusion can be beneficial,
     and why it often is not:
     \begin{itemize}
-      \nitem{Before the partial fustion}
+      \nitem{Before the partial fusion}
       \begin{itemize}
         \item Memory read for $B$'s inputs
         \item Compute cost to compute $B$'s result
@@ -572,7 +572,7 @@
         \item Memory read of $B$'s result for $C$
       \end{itemize}
 
-      \nitem{After the partial fustion}
+      \nitem{After the partial fusion}
       \begin{itemize}
         \item Memory read for $B$'s inputs
         \item Compute cost to compute $B$'s result
@@ -699,7 +699,7 @@
   \subsection{Recursively Partitioned Search Space}
 
     When trying to find the optimal call sites to inline,
-    a naïve apporach is to evaluate every possible \emph{inlining configuration},
+    a naïve approach is to evaluate every possible \emph{inlining configuration},
     which is an assignment of $\{\text{inline},\text{no-inline}\}$ to the call sites.
     This entails evaluating $2^n$ cases,
     where $n$ is the number of call sites,
@@ -715,8 +715,8 @@
     each can be searched independently,
     as an inlining decision in one subgraph cannot affect an inlining decision in another.
     This considerably reduces the search space,
-    since $|C_G| = \sum_{g\in {cc}_G} |C_g|$,
-    as opposed to $\prod_{g\in {cc}_G} |C_g|$,
+    since only $\sum_{g\in {cc}_G} |C_g|$ need to be evaluated,
+    as opposed to the $\prod_{g\in {cc}_G} |C_g|$ a naive enumeration would visit,
     where $C_x$ are the searched inlining configurations of a graph $x$,
     and ${cc}_G$ are the connected components of $G$.
 
@@ -779,7 +779,7 @@
       and yield the combined configuration and the resulting cost
     \end{itemize}
     As in both steps, the unfolding and the folding, children of a given node
-    are independant of each other, \recpart\ is embarassingly parallel.
+    are independent of each other, \recpart\ is embarrassingly parallel.
 
     While \citet{recpart-paper} uses binary size as a cost metric,
     the only requirement of the cost metric is
@@ -833,7 +833,7 @@
 
   This section explains
   (1) how the XLA computation graph compiler was modified to
-  facilitate controling and evaluating fusions,
+  facilitate controlling and evaluating fusions,
   (2) how the search itself was implemented,
   (3) what graphs were used to test the search on,
   (4) how the results of the search were validated against real measurements,
@@ -843,7 +843,7 @@
 
     XLA is a computation graph compiler and evaluator
     that can be targeted by tensorflow, JAX and PyTorch
-    and supports running models on CPUs, GPUs and other accelarators.
+    and supports running models on CPUs, GPUs and other accelerators.
     It consumes so-called HLO modules,
     which can contain multiple computation graphs,
     with one being marked as the root computation of the module.
@@ -866,9 +866,9 @@
     and to facilitate interacting with XLA in general,
     we created 3 passes running at key steps in XLA's pipelines.
     Each pass takes some arguments from the process environment,
-    returning immediatly when its parameters are not defined in the environment
+    returning immediately when its parameters are not defined in the environment
     without performing any modifications to the module,
-    effectively disableing the pass:
+    effectively disabling the pass:
     \begin{itemize}
       \nitem{\code{ForwardFusion}} dumps the state of the module very early on before many optimizations
       to a file specified in its environment-passed argument
@@ -882,17 +882,17 @@
       to estimate the runtime of the root computation in nanoseconds,
       returning that value through an environment-passed filename.
       XLA's internal runtime estimation mechanisms take a description of a GPU
-      to model runtime on that GPU with a high degree of accuracy\ncite.
+      to model runtime on that GPU\cite{openxlagpumodel}.
       It runs after most optimizations,
       at the latest point before many operations are rewritten using
-      GPU specifc intrinsics.
+      GPU specific intrinsics.
     \end{itemize}
 
     As fusions are such a crucial optimization for computation graphs,
     many different passes, even normalization passes, generate fusions.
     Instead of preventing fusions which we don't force,
     we let the compiler produce fusions after our forced fusions
-    as it normaly would.
+    as it normally would.
     This has the helpful side-effect,
     that passing an empty list of fusions is equivalent to
     not having changed anything about fusions,
@@ -924,8 +924,8 @@
       the nanosecond runtime $c$, as returned from XLA,
       is converted to a \emph{quality} metric $q$
       as $q=\frac{1}{c}$,
-      as to allow returning a quality metric of 0 in cases where \code{hlo\_opt} fails,
-      which can happen when non-sensical fusions are explored.
+      so as to allow returning a quality metric of 0 in cases where \code{hlo\_opt} fails,
+      which can happen when nonsensical fusions are explored.
       As \recpart\ only considers comparisons of different cost metrics
       and negative cost metrics cannot occur,
       this change does not change the optimization as long as
@@ -957,7 +957,8 @@
       \item
       An option called \code{fuse-all-consumers} is introduced to only consider fusions where operators
       are fused into all their consumers,
-      thus parital fusions are not considered.
+      thus partial fusions are not considered.
+      The same reduction is used by Optimus\cite{cai2022optimus}. % TODO: is this a good idea?
       It does not change how edges are selected,
       instead it just merges or splits all edges that share
       the producer of the selected edge.
@@ -966,7 +967,7 @@
       A \emph{dropout} parameter is introduced to prune a specified ratio of the graph.
       Edges to prune are selected by sorting the edges topologically,
       dropping edges from both the front and back of this edge list until enough edges are dropped.
-      If the resultant graph as multiple connected components,
+      If the resultant graph has multiple connected components,
       the largest one in terms of edge count is searched by \recpart.
 
       % TODO: maybe this belongs somewhere else?
@@ -974,14 +975,14 @@
       as explained in Section~\ref{sect:limitations},
       the size of the search space searched with dropout is a lower bound
       for the size of the full search space,
-      as the set of searched fusion configurations with dropout is a subset
-      of the set of searched fusion configurations without dropout.
+      as every configuration in the set of searched fusion configurations with dropout
+      maps to at least one configuration in the set of searched fusion configurations without dropout.
     \end{itemize}
 
-    The searches were ran on an AMD Ryzen Threadripper 3990X with up to 32 threads in parallel.
+    The searches were run on an AMD Ryzen Threadripper 3990X with up to 32 threads in parallel.
 
   \subsection{The modules that were optimized}
-    The HLO moduels searched for optimality were generated by
+    The HLO modules searched for optimality were generated by
     implementing common neural network architectures with Keras
     and dumping their evaluation calls.
     The architectures and their models used are as follows:
@@ -1000,7 +1001,7 @@
       \nitem{Generative Pretrained Transformer (GPT)} % TODO: do this for all items with titles
       Three sizes of autoregressive GPT models,
       differing in dimensionality of latent token representation
-      and differing dimenstionality of the Key- and Value-vector
+      and differing dimensionality of the Key- and Value-vector
       and the number of heads in their attention blocks.
       As they only differ in the dimensionality of the tensors,
       the graphs are equivalent,
@@ -1008,8 +1009,8 @@
       as costs and benefits of different fusions may fall out differently.
     \end{itemize}
     All the models used are comparatively small,
-    the largest of which, Diffusion (L), being just under 10 Million parameters,
-    however bigger models failed to fit into the RTX 2080 Ti's memory.
+    the largest of which, Diffusion (L), is just under 10 Million parameters.
+    Bigger models failed to fit into the RTX 2080 Ti's memory.
 
     \begin{table}[t]%tab:models
       \caption{Summary of the models optimized, accompanied by the dropout ratio used}
@@ -1049,23 +1050,23 @@
     Search times were estimated by counting the number of evaluations,
     using an estimated evaluation rate of 60 evaluations per second.
     The picked dropout values are listed in Table~\ref{tab:models},
-    even just marginaly reducing these dropout values quickly
-    grow estimated search time to multiple days.
-    All models were seached using the \code{fuse-all-consumers} option enabled.
+    even just marginally reducing these dropout values quickly
+    grows estimated search time to multiple days.
+    All models were searched with the \code{fuse-all-consumers} option enabled.
 
   \subsection{Benchmarking}
     After the harness returned optimal fusions to force for each model,
     the ones for which it reported an improvement over the baseline
-    acording to its quality metric were benchmarked against the basleine
+    according to its quality metric were benchmarked against the baseline
     on an Nvidia RTX 2080 Ti using XLA's \code{run\_hlo\_module} utility,
     timing 200 runs after 25 warmup runs of both the baseline and the optimized module.
 
   \subsection{Scaling}
-    To quanitfy how the number of configurations to evaluate scale in terms of
+    To quantify how the number of configurations to evaluate scales in terms of
     the number of edges in the graph,
-    sweeps of the dropout rate were ran for the models\footnote{
+    sweeps of the dropout rate were run for the models\footnote{
       As the graphs for the three GPT models are identical and the number
-      of evaluated configurations do not depend on the evaluation result,
+      of evaluated configurations does not depend on the evaluation result,
       the quality metric,
       the number of evaluated configurations for a given dropout rate
       are identical for all three GPT models
@@ -1147,12 +1148,12 @@
 
   Table~\ref{tab:results} shows results of the harness runs.
   The \emph{Edges} columns show the number of edges in the graph both before and after dropout.
-  The columns under \emph{Quality metric} containt the quality metrics of
+  The columns under \emph{Quality metric} contain the quality metrics of
   both the baseline and the optimized module as computed by the harness,
   showing the relative improvement on the quality metric in cases where
-  and imporvement could be found.
+  an improvement could be found.
   The search yielded marginal improvements for only two models.
-  The \emph{Eval rate} column lists average evaluation rate for a given model,
+  The \emph{Eval rate} column lists the average evaluation rate for a given model,
   yielding a total search time of just under 35 hours for all models.
   The drop from the expected evaluation rate of 60 e/s down to
   11.4 e/s in the worst case can be explained by the work not being split up evenly
@@ -1265,7 +1266,7 @@
   Because the harness predicted improvements for the MNIST and Diffusion (L) models,
   these two were benchmarked for real runtime performance,
   yielding runtimes as shown in Figure~\ref{fig:runtime},
-  the mean, median and standard deviation of which are listed in in Table~\ref{tab:runtime}.
+  the mean, median and standard deviation of which are listed in Table~\ref{tab:runtime}.
   Figure~\ref{fig:runtime} shows that the MNIST runtime exhibits rather long tails,
   while Diffusion (L) has shorter tails.
   It is notable that both models benchmarked had rather short runtimes,
@@ -1320,13 +1321,13 @@
     %}
   \end{table}
 
-  Evaluating the statistical relevance of the runtime results using a
+  Evaluating the statistical significance of the runtime results using a
   Mann-Whitney U test and a 95\% confidence interval for improvement in terms
   of median runtime, as seen in Table~\ref{tab:relevance},
-  it becomes apparent, that the lack of improvements visible in Table~\ref{tab:runtime}
-  is not statistically relevant.
-  With P-Values greater than the convential .05 limit,
-  a statistically relevant difference in the runtime distributions could be determined
+  it becomes apparent that the differences visible in Table~\ref{tab:runtime}
+  are not statistically significant.
+  With P-Values greater than the conventional .05 limit,
+  a statistically significant difference in the runtime distributions could be determined
   for neither of the benchmarked models.
   This is also supported by the 95\% confidence interval for median runtime improvement
   including 0\% for both benchmarks.
@@ -1387,11 +1388,11 @@
     \Description{
       Six log-linear scatter plots plotting the relation between edge count and search space size for the six different
       computation graphs.
-      They all appear to be mostly linear or piecewise linear with both vertical and horizontal jumps, indicating exponential growth with differing regimes, each of which having differing growth rates.
+      They all appear to be mostly linear or piecewise linear with both vertical and horizontal jumps, indicating exponential growth with differing regimes, each of which has differing growth rates.
     }
   \end{figure*}
 
-  Figure~\ref{fig:scaling} plots the six sweeps ran on the models on a log-linear plot,
+  Figure~\ref{fig:scaling} plots the six sweeps run on the models on a log-linear plot,
   each accompanied by a linear regression finding parameters $c$ and $b$
   of the exponential function $cb^x$ where $x$ is the number of edges.
   The bases $b$ are in the range from $1.2$ to $1.6$.
@@ -1399,13 +1400,13 @@
   \subsection{Search Space is still too Large}
     While \recpart\ did reduce the search space,
     it did not yield as big of a gain as \citet{recpart-paper}.
-    Even with the additional search space reduction of not considering parital fusions,
+    Even with the additional search space reduction of not considering partial fusions,
     a high dropout ratio had to be used to get results in feasible time.
     It appears that the search space remains infeasible due to the following factors reinforcing one another:
     \begin{itemize}
       \nitem{Large graphs}
-      % TODO: "classical programing" is shakey
-      As compared to classical programing where functions consist of multiple instructions,
+      % TODO: "classical programming" is shakey
+      As compared to classical programming where functions consist of multiple instructions,
       expressing computations as computation graphs tends to need many more operators
       connected together as compared to functions calling each other in classical programming,
       because functions tend to express a lot more complex logic as they already are a composition
@@ -1435,36 +1436,36 @@
     and what they might tell us.
 
     Either horizontal or vertical jumps can be observed in most of the models.
-    Horizontal jumps can be explained by how the dropout mechanims reduces the graph.
+    Horizontal jumps can be explained by how the dropout mechanisms reduces the graph.
     As explained in Section~\ref{sect:dropout},
     dropout sorts the edges topologically,
     removes edges from both ends of the sorted edge list,
     and picks the biggest connected component of the remaining graph.
     This has as effect that there can be a second, smaller,
-    connected component that is pruned by the drop out logic.
+    connected component that is pruned by the dropout logic.
     If a reduced dropout rate now reveals a bridge between two connected components,
     the two previously disconnected connected components merge into one,
     instantly increasing the edge count of the searched graph by both the
-    bridge connecting them and the entirity of the smaller connected component
+    bridge connecting them and the entirety of the smaller connected component
     which was previously pruned.
     Considering, however, the edge connecting the newly connected components is a bridge,
     \recpart\ likely picks that bridge as its first edge,
     instantly reducing the search space again,
-    explaining why horizontal do not seem to also jump vertically.
+    explaining why horizontal jumps do not seem to also jump vertically.
 
     Vertical jumps may be explained by quirks in the edge selection heuristic
     rather than graph structure,
     as vertical jumps seem to curve away from the jump,
     sometimes both before and after the jump.
     Figure~\ref{fig:scaling:unet} for example shows,
-    that the vertical jump above 30 edges is immediatly followed by a
+    that the vertical jump above 30 edges is immediately followed by a
     \emph{course correction} back to the regressed line.
     Similarly, Figure~\ref{fig:scaling:cifar} exhibits a dip just before the vertical jump,
     leading to the vertical jump \emph{itself} being the course correction back
     to the regressed line.
     The jump just below 50 edges in Figure~\ref{fig:scaling:mnist}
     exhibits both the dip before the vertical jump,
-    aswell as the course correction back down after the jump.
+    as well as the course correction back down after the jump.
 
 
 \section{Limitations}\label{sect:limitations}
@@ -1485,7 +1486,7 @@
     Since dropout reduces the graph visible to \recpart,
     it may hide potential regions which \emph{could} be optimized and which
     \emph{can} improve on the baseline,
-    so claims about the lack of of improvements cannot be made.
+    so claims about the lack of improvements cannot be made.
   \end{itemize}
 
   % TODO: Maybe a paragraph about that there are _multiple_ fusion strategies to choose for each fusion
@@ -1527,7 +1528,7 @@
   such as using machine learning models\cite{ashouri2018survey, cui2025decos} and
   pruning candidates by collapsing multiple into groups\cite{phothilimthana2016lens}.
   While these efforts find good solutions fast, they do so by pruning unlikely candidates,
-  making them non-exhaustive and incapable of finding the global optmimum with certainty.
+  making them non-exhaustive and incapable of finding the global optimum with certainty.
 
   \partitle{Exhaustive search and \recpart} % TODO: find better title
   Exhaustive search guarantees optimality, but only under conditions that keep the search space bounded.
@@ -1540,7 +1541,7 @@
   exhaustive state space search during compiler development,
   and Optimus\cite{cai2022optimus} achieves exhaustive search by both
   requiring a cost metric that decomposes additively over the chosen partition
-  and restricting graph structure.
+  and exploiting a maximum out-degree that is small in practice.
   These approaches share a common pattern: exhaustiveness is bought by restricting the problem
   to a bounded graph structure,
   a fixed cost model, or an offline search.
@@ -1561,21 +1562,21 @@
   by observing \emph{how} \recpart\ carves up the graph and how topologies found in
   computation graphs affect its ability to reduce the search space
 
-  \partitle{Non-partial fusion specific edges selection}
+  \partitle{Non-partial fusion specific edge selection}
   Our edge-selection heuristic was intended to find good edges when only considering the
-  fusion of that specific edges.
+  fusion of that specific edge.
   Future work could attempt to find an edge-selection heuristic better suited for
   searching with the \code{fuse-all-consumers} option enabled,
   by considering that fusing or not fusing a given edge also applies that decision to
   all outgoing edges of the producer.
 
   \partitle{More representative metric}
-  We observed, that using a model as a search metric as a proxy for a different metric
-  can produce non-represetative search results.
-  Using a more direct metric, such as benchmarked runtime, could be used to find improvements
+  We observed that using a model as a search metric, as a proxy for a different metric
+  can produce non-representative search results.
+  A more direct metric, such as benchmarked runtime, could be used to find improvements
   that a model does not model.
 
-  \partitle{Additional reduction in search spce}
+  \partitle{Additional reduction in search space}
   We adapted a search space reduction strategy from call graphs which can contain cycles.
   As computation graphs cannot contain cycles,
   future work could find a way to exploit this for an additional reduction in search space.
@@ -1586,14 +1587,16 @@
   optimal fusion configurations.
   Our results indicate, that the search space reduction provided by \recpart\ is not sufficient,
   even after additional search space reductions,
-  to exhaustively search optimal fusion configurations,
-  finding no statistically significant improvements with heavily pruned computation graphs
-  due to inaccuracies of the cost metric.
-
+  to exhaustively search optimal fusion configurations.
+  On the heavily pruned graphs
+  we could search, we found no statistically significant improvement,
+  without being evidence that no improvement exists due to the exclusion
+  of partial fusions, the heavy pruning, and a demonstrably inaccurate
+  quality metric.
   As a result we conclude that \recpart\ alone is not sufficient for operator fusion
-  on realistic computation graphs.
+  on the computation graphs we tested.
   The method's feasibility for inlining depends on a static and accurate cost metric
-  and a call graph structure that partitiones well.
+  and a call graph structure that partitions well.
   Neither seems to be true for computation graphs,
   where runtime performance statically can only be estimated
   and search spaces still grow quickly even after application of \recpart.
