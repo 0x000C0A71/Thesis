@@ -1539,7 +1539,8 @@
   Bik\cite{bik2021exhaustive} decouples search time from compile time by performing
   exhaustive state space search during compiler development,
   and Optimus\cite{cai2022optimus} achieves exhaustive search by both
-  restricting graph structure and cost metric.
+  requiring a cost metric that decomposes additively over the chosen partition
+  and restricting graph structure.
   These approaches share a common pattern: exhaustiveness is bought by restricting the problem
   to a bounded graph structure,
   a fixed cost model, or an offline search.
